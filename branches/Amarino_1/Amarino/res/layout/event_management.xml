@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="#555"
+	android:orientation="vertical"
+	>
+	
+	<!-- Top Buttons -->
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:orientation="horizontal"
+		android:layout_marginBottom="1dp"
+		android:layout_weight="7"
+	>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			android:layout_marginRight="1dp"
+			>
+			<ImageButton
+				android:id="@+id/create_collection_btn"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent" 
+				android:layout_weight="1"
+				android:padding="3dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:background="#333"
+				android:src="@drawable/folder_new_128"
+				>
+			</ImageButton>
+			
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Create Collection"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+		</LinearLayout>
+	
+	
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:layout_marginRight="1dp"
+			android:orientation="vertical"
+			>
+			<ImageButton
+				android:id="@+id/change_collection_btn"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent"
+				android:layout_weight="1"
+				android:padding="3dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:background="#333"
+				android:src="@drawable/recycle_bin_full_128"
+				>
+			</ImageButton>
+			
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Change Collection"
+				android:paddingBottom="3dp"
+				android:gravity="center" 
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+		</LinearLayout>
+	
+	
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			>
+			<ImageButton
+				android:id="@+id/delete_collection_btn"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent"
+				android:layout_weight="1"
+				android:padding="3dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:background="#333"
+				android:src="@drawable/bin_128"
+				>
+			</ImageButton>
+			
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Delete Collection"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+
+		</LinearLayout>
+	
+	</LinearLayout> <!-- Bottom Buttons End-->
+	
+	<!-- List Section-->
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="3"
+		android:orientation="vertical"
+		>
+		
+		<!-- Collection Name -->
+		<TextView 
+			android:id="@+id/collection_tv"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/no_collections"
+			android:textSize="22sp"
+			android:paddingBottom="0dp"
+			android:paddingTop="3dp"
+			android:textColor="#ccc"
+			android:background="#333"
+			android:gravity="center"
+			>
+		</TextView>
+		<TextView 
+			android:id="@+id/device_address_tv"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:textSize="12sp"
+			android:paddingBottom="3dp"
+			android:paddingTop="0dp"
+			android:textColor="#ccc"
+			android:background="#333"
+			android:gravity="center"
+			>
+		</TextView>
+	
+		<!-- Event List -->
+		<ListView
+			android:id="@id/android:list"
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent"
+			android:layout_weight="1"
+			android:background="#fff"
+			android:cacheColorHint="#fff"
+			>
+		</ListView>
+  </LinearLayout> <!-- List End -->
+	
+	
+  <!-- Bottom Buttons -->
+  <LinearLayout
+  		android:id="@+id/event_buttons"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="7"
+		android:layout_marginTop="1dp"
+		android:orientation="horizontal"
+		>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:layout_marginRight="1dp"
+			android:orientation="vertical"
+			>
+			<ImageButton
+				android:id="@+id/add_event"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent" 
+				android:layout_weight="1"
+				android:padding="3dp"
+				android:scaleType="fitCenter" 
+				android:background="#333"
+				android:src="@drawable/add"
+				>
+			</ImageButton>
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Add Event"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+		</LinearLayout>
+		
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			>
+			<ImageButton
+				android:id="@+id/create_event"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent"
+				android:layout_weight="1"
+				android:padding="3dp"
+				android:scaleType="fitCenter" 
+				android:background="#333"
+				android:src="@drawable/construction_icon" 
+				>
+			</ImageButton>
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Custom Events"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+		</LinearLayout>
+		
+	</LinearLayout> <!-- Bottom Button End -->
+
+
+</LinearLayout>

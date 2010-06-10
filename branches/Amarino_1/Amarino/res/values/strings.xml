@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<resources>
+    <string name="custom_events">Custom Events</string>
+    <string name="list_of_devices">List of Devices</string>
+    <string name="no_custom_events_text">No custom events defined yet!
+    \n\nCustom events are events you send from your own Android application. 
+    \n\nIf you write an Android application which should send messages/data to your Arduino, 
+    you have to broadcast an Intent. Create a custom event for this particular Intent, add it
+    to your Event Collection and Amarino will forward your custom event for you to your Arduino.</string>
+    <string name="change">Change</string>
+    <string name="select_collection_title">Select Collection</string>
+    <string name="no_collections">No Collections</string>
+    <string name="enable_bluetooth">Enable Bluetooth</string>
+    <string name="disable_bluetooth">Disable Bluetooth</string>
+    <string name="scan_for_devices">Scan for Devices</string>
+    <string name="try_reconnect">try to\nreconnect</string>
+    <string name="wait_operation_going_on">Please wait until operation is finished!</string>
+    
+    
+    <string name="create_collection_msg">Please enter a name for your new event collection.</string>
+    <string name="create_collection">Create Collection</string>
+    
+    <!-- Events -->
+	<string name="event_name_earthquake">Earthquake</string>
+    <string name="event_desc_earthquake">Fires when an earthquake occured somewhere on earth.\n
+	(requires the Earthquake application from Reto Meier to be active to get this event)
+	</string>
+    
+    <string name="event_name_phone_state_offhook">Phone state (Offhook)</string>
+    <string name="event_desc_phone_state_offhook">Fires once when phone is offhooked</string>
+    
+    <string name="event_name_phone_state_idle">Phone state (Idle)</string>
+    <string name="event_desc_phone_state_idle">Fires once when phone is idle</string>
+    
+    <string name="event_desc_phone_state_ringing">Fires once when phone is ringing.\nThe incoming number is also attachted to this event.</string>
+    <string name="event_name_phone_state_ringing">Phone state (Ringing)</string>
+    
+    <string name="event_name_battery_level">Battery Level</string>
+    <string name="event_desc_battery_level">Fires whenever your phone's battery level changes\n[0-100]</string>
+    
+    <string name="event_name_temperature">Temperature Sensor</string>
+    <string name="event_desc_temperature">Send temperature in Celisus degree.\n(only if your phone has a temp sensor)</string>
+    
+    <string name="event_name_time_tick">Time Tick</string>
+    <string name="event_desc_time_tick">Fires each minute</string>
+    
+    <string name="event_name_compass">Compass</string>
+    <string name="event_desc_compass">Sends heading in degrees\n[0-359] 0=North,90=E,180=S,270=W </string>
+    
+    <string name="event_name_orientation">Orientation Sensor</string>
+    <string name="event_desc_orientation">Sends orientation data in degrees\n[azimuth, pitch, roll]</string>
+    
+    <string name="event_name_accelerometer">Accelerometer Sensor</string>
+    <string name="event_desc_accelerometer">Sends acceleration data in m/s^2\n[x, y, z]</string>
+    
+    <string name="event_name_magnetic_field">Magnetic Field Sensor</string>
+    <string name="event_desc_magnetic_field">Sends magnetic field data in micro-Tesla\n[x, y, z]</string>
+   
+    <string name="event_name_test">Test Event</string>
+    <string name="event_desc_test">Sends an empty message every 5 seconds for testing.</string>
+   
+    <string name="event_name_receive_sms">Receive SMS</string>
+    <string name="event_desc_receive_sms">Notifies when a SMS has been received.\n(text is not transmitted!)</string>
+   
+    
+    <!-- General -->
+    <string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="ok">Ok</string>
+	<string name="create">Create</string>
+	<string name="cancel">Cancel</string>
+	<string name="connecting_to_arduino">connecting...</string>
+    <string name="connect_to_arduino">Connect to Arduino</string>
+    <string name="disconnect_from_arduino">Disconnect from Arduino</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="app_name">Amarino</string>
+    <string name="long_app_name">android meets arduino</string>
+    
+    <!-- Titles -->
+    <string name="bt_management_title">"Bluetooth Manager"</string>
+	<string name="event_management_title">"Event Manager"</string>
+	<string name="custom_event_management_title">"Custom Event Manager"</string>
+	<string name="monitoring_title">"Monitoring"</string>
+	<string name="settings_title">"Settings"</string>
+    
+    <!-- Menu -->
+	<string name="menu_scan">Scan for devices</string>
+	<string name="menu_settings">Settings</string>
+	<string name="menu_bluetooth">Bluetooth On/Off</string>
+	<string name="menu_about">About</string>
+	
+	<!-- BTService -->
+	<string name="bluetooth_error_init">Error while initialization of local Bluetooth device.</string>
+	<string name="bluetooth_connection_alive_response">alive</string>
+	<string name="bluetooth_lost_connection">Lost connection!</string>
+	<string name="bluetooth_reconnect">Try to reconnect to %s</string>
+	<string name="bluetooth_service_started_title">Background service started</string>
+	<string name="bluetooth_service_started_text">Service is running</string>
+	<string name="bluetooth_connection_established_title">Connection established</string>
+	<string name="bluetooth_connection_established_text">Connected to %s</string>
+	
+	<!-- BluetoothManagement -->
+	<string name="no_name_found">NO NAME FOUND</string>
+    <string name="not_paired">not paired</string>
+    <string name="paired">authenticated</string>
+    <string name="connecting">connecting...</string>
+    
+	<!-- BTActivity -->
+	<string name="bluetooth_disabled_dialog_title">Bluetooth is disabled</string>
+	<string name="bluetooth_disabled_dialog_msg">Please enable Bluetooth first!</string>
+	<string name="bluetooth_pairing_dialog_msg">Pairing. Please wait...</string>
+	<string name="bluetooth_enabling_progess_dialog_msg">Enabling Bluetooth. Please wait...</string>
+	<string name="bluetooth_disabling_progess_dialog_msg">Disabling Bluetooth. Please wait...</string>
+	<string name="bluetooth_pin_requested_dialog_msg">Please pull down the notification bar to enter the PIN.</string>
+	<string name="bluetooth_pin_requested_dialog_title">Pin Request</string>
+	<string name="bluetooth_scanning_progress_dialog_msg">Scanning Bluetooth devices. Please wait...</string>
+	<string name="bluetooth_connect_to_device_dialog_msg">Do you want to connect to this device?</string>
+	<string name="bluetooth_pair_to_device_dialog_msg">Do you want to pair this device?</string>
+	<string name="bluetooth_unpair">Unpair</string>
+	
+	<!-- BTPreferences -->
+	<string name="pref_last_device_address_title">Default Device Address</string>
+	<string name="pref_last_device_address_summary">Bluetooth device you want to connect with automatically.</string>
+	<string name="pref_last_device_address_default_value">00:00:00:00:00:00</string>
+	<string name="pref_last_device_address_dialog_msg">Enter the address of the Bluetooth device you want to connect to when pairing the device.</string>
+	<string name="pref_last_device_address_dialog_title">Bluetooth client address</string>
+	<string name="pref_alive_period_title">Alive Request Period</string>
+	<string name="pref_alive_period_summary">Specifies the time between two successive alive requests.</string>
+	<string name="pref_alive_period_default_value">30000</string>
+	<string name="pref_sensor_reading_rate_title">Sensor Reading Rate</string>
+	<string name="pref_sensor_reading_rate_summary">How fast Android should send sensor data.</string>
+	<string name="pref_sensor_reading_rate_default_value">2</string>
+	<string name="pref_stay_connected_title">Stay Connected</string>
+	<string name="pref_stay_connected_summary">Always stay connected to Arduino.</string>
+	<string name="pref_stay_connected_default_value">true</string>
+	
+
+	<!-- EditCustomEvent -->
+	<string name="save">Save</string>
+	<string name="not_save">Discard</string>
+	<string name="create_event_title">Create Custom Event</string>
+	<string name="edit_event_title">Edit Custom Event</string>
+	<string name="name_label">Name</string>
+	<string name="name_data_hint">Event name</string>
+	<string name="desc_label">Description</string>
+	<string name="desc_data_hint">Event description</string>
+	<string name="action_label">Action</string>
+	<string name="action_data_hint">Action String</string>
+	<string name="flag_label">Flag</string>
+	<string name="select_flag">Select Flag</string>
+	<string name="byte_label">"Byte: %s"</string>
+	<string name="ascii_label">"Ascii: %s"</string>
+	<string name="data_label">Data</string>
+	<string name="type">Type</string>
+	<string name="key_hint">key</string>
+	
+	
+	<string name="about_msg">Amarino - A prototyping platform for Android and Arduino
+	\n\n\u00A9 2009 by Bonifaz Kaufmann
+	\n\nhttp://www.amarino-toolkit.net
+	\n\nAmarino uses Stefano Sanna\'s Bluetooth API which can be found at
+	\nhttp://code.google.com/p/android-bluetooth/</string>
+
+</resources>

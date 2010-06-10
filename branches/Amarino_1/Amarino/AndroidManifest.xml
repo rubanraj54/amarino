@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="edu.mit.media.android.amarino"
+      android:versionCode="9" android:versionName="0.2.1">
+      
+      <uses-sdk android:targetSdkVersion="3" android:maxSdkVersion="4" android:minSdkVersion="3"/>
+      
+    <application android:icon="@drawable/icon" 
+    			 android:label="@string/app_name" android:debuggable="false">
+    			 
+        <activity android:name=".Amarino"
+                  android:label="@string/app_name" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name="BluetoothManagement" android:screenOrientation="portrait"></activity>
+        <activity android:name="EventManagement"></activity>
+        <activity android:name="Monitoring"></activity>
+        <activity android:name="BTPreferences"></activity>
+        <activity android:name="ShowCustomEvents"></activity>
+        <activity android:name="EditCustomEvent"></activity>
+        <activity android:name="EventDetail"></activity>
+		
+		<service android:name="BTService"></service>
+		
+		<receiver android:name="RemoteControl" 
+			android:process="edu.mit.media.android.amarino">
+			<intent-filter>
+                <action android:name="amarino.CONNECT" />
+                <action android:name="amarino.DISCONNECT" />
+                <action android:name="amarino.SET_COLLECTION" />
+            </intent-filter>
+
+		</receiver>
+
+		<provider android:name=".db.AmarinoProvider"
+			android:authorities="edu.mit.media.android.provider.amarino">
+		</provider>
+</application>
+    
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
+<uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
+<uses-permission android:name="android.permission.BATTERY_STATS"></uses-permission>
+<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
+<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
+<uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+</manifest> 

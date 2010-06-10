@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="fill_parent">
+  
+  <Button
+  		android:id="@+id/monitoring_btn"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true"
+		android:layout_alignParentLeft="true"
+		android:text="Enable Monitoring"
+		android:textColor="#555"
+		android:textSize="20sp"
+		android:layout_marginLeft="10dp" 
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="2dp"
+		android:layout_marginBottom="2dp"
+  />
+  
+
+  <EditText 
+    	android:id="@+id/data_to_send"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/monitoring_btn"
+        android:layout_marginLeft="10dp" 
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="2dp"
+		android:layout_marginBottom="2dp"
+        android:singleLine="true"
+        android:hint="data you want to send"
+        />
+        
+  <Button
+  		android:id="@+id/clear_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/data_to_send"
+		android:layout_alignParentRight="true"
+		android:text="Clear Log"
+		android:textColor="#555"
+		android:textSize="20sp"
+		android:paddingLeft="15dp"
+		android:paddingRight="15dp"
+		android:layout_marginLeft="10dp" 
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="2dp"
+		android:layout_marginBottom="2dp"
+  />
+  <Button
+  		android:id="@+id/send_btn"
+		android:layout_width="170dp"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/data_to_send"
+		android:layout_alignParentLeft="true"
+		android:text="Send"
+		android:textColor="#555"
+		android:textSize="20sp"
+		android:layout_marginLeft="10dp" 
+		android:layout_marginRight="10dp"
+		android:layout_marginTop="2dp"
+		android:layout_marginBottom="2dp"
+  />
+  
+    
+
+  <ScrollView
+		android:id="@+id/log_scroll"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/send_btn"
+		android:layout_alignParentBottom="true"
+		android:scrollbars="vertical" 
+		android:background="#ddf">
+		<TextView
+			android:id="@+id/log"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_marginRight="?android:attr/scrollbarSize"
+			android:padding="5dp"
+			android:textSize="12sp"
+			android:textColor="#111"
+			>
+		</TextView>
+	</ScrollView>
+</RelativeLayout>

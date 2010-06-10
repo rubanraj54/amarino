@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+         android:orientation="vertical"
+         android:layout_width="fill_parent" 
+         android:layout_height="fill_parent"
+         android:background="#555">
+         
+         <LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="4"
+			android:layout_marginBottom="1dp"
+			android:orientation="vertical"
+			>
+         	<ImageButton
+				android:id="@+id/add_custom_event_btn"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent" 
+				android:layout_weight="1"
+				android:padding="3dp"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:background="#333"
+				android:src="@drawable/construction_cone_128"
+				>
+			</ImageButton>
+			
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Create Custom Event"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+		 </LinearLayout>
+
+	<!-- List Section-->
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:orientation="vertical"
+		android:padding="15dp"
+		android:background="#333"
+		>
+		<!-- List title -->
+		<TextView 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/custom_events"
+			android:textSize="16sp"
+			android:padding="3dp"
+			android:textColor="#ddd"
+			android:background="#222"
+			android:gravity="center"
+			>
+		</TextView>
+		<ListView
+			android:id="@id/android:list"
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent"
+			android:background="#fff" android:cacheColorHint="#fff"
+            android:drawSelectorOnTop="false">
+		</ListView>
+		<ScrollView
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent"
+			android:scrollbars="vertical"
+			android:background="#fff"
+			>
+			<TextView android:id="@id/android:empty"
+	               android:layout_width="fill_parent" 
+	               android:layout_height="fill_parent"
+	               android:padding="6dp"
+	               android:textSize="15sp"
+	               android:textColor="#555"
+	               android:text="@string/no_custom_events_text"/>
+        </ScrollView>
+	 </LinearLayout>
+ </LinearLayout>

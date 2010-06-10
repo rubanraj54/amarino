@@ -1,0 +1,61 @@
+Documentation is available under
+http://docs.google.com/View?id=ddht94k8_5gmp5m2g2
+
+Explanation how to use Amarino Example applications.
+For all applications hold that you must ensure that
+the Bluetooth shield you want to communicate with
+is set as default. Either in Settings or by long 
+pressing in Bluetooth Manager on your desired
+Bluetooth device choosing "Set as default".
+
+Double check if the flag you have set, is the flag 
+you register a function for in your arduino sketch.
+
+------------------------------------------------------
+SpeakToArduino
+------------------------------------------------------
+This app works with a custom event. 
+You have to have a custom event added to your active 
+collection in order to turn light on with this app.
+
+- Custom Event Light:
+action: arduino.light
+flag: 'r'
+
+- Custom Event Dark:
+action: arduino.dark
+flag: 's'
+
+- You might also add the custom events from MultiColorLamp
+  to control each light individually.
+
+------------------------------------------------------
+MultiColorLamp
+------------------------------------------------------
+This app uses the GUI to change intensity of a red,
+a green and blue LED.
+You need 3 custom events added to your collection
+to run this app.
+
+- Custom Event Red:
+action: amarino.multicolorlamp.red
+flag: 'a'
+data: key=red type=Integer
+
+- Custom Event Green:
+action: amarino.multicolorlamp.green
+flag: 'b'
+data: key=green type=Integer
+
+- Custom Event Blue:
+action: amarino.multicolorlamp.blue
+flag: 'c'
+data: key=blue type=Integer
+
+------------------------------------------------------
+SensorGraph
+------------------------------------------------------
+This app works without any events added, just make
+sure the correct Bluetooth address is set as default
+
+

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:background="#555"
+    >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            
+            android:padding="5dp"
+            android:background="#333"
+            android:orientation="vertical"
+            >
+
+            <!-- The edit items -->
+            
+            <!-- Name -->
+            <TextView 
+            	android:id="@+id/name_label"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/name_label"
+		        style="@style/CustomEventLabel"
+		        />
+		    <EditText 
+		    	android:id="@+id/event_name_data"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:hint="@string/name_data_hint"
+		        style="@style/CustomEventEditText"
+		        />
+			
+           	
+           	<!-- Description -->
+           	<include layout="@layout/edit_divider"/>
+           	<TextView 
+            	android:id="@+id/desc_label"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        style="@style/CustomEventLabel"
+		        android:text="@string/desc_label"
+		        />
+		    <EditText 
+		    	android:id="@+id/event_desc_data"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        style="@style/CustomEventEditText"
+		        android:hint="@string/desc_data_hint"
+		        />
+		    <TextView
+		    	android:id="@+id/event_desc_data_text"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:layout_margin="10dp"
+		        android:textSize="16sp"
+		        android:singleLine="false"
+		        />
+ 	
+           	<!-- Action -->
+           	<include layout="@layout/edit_divider"/>
+			<TextView 
+            	android:id="@+id/action_label"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:text="@string/action_label"
+		        style="@style/CustomEventLabel"
+		        />
+		    <EditText 
+		    	android:id="@+id/action_data"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content"
+		        android:singleLine="false"
+		        style="@style/CustomEventEditText"
+		        android:hint="@string/action_data_hint"
+		        />
+  			
+           	<!-- Flag -->
+           	<include layout="@layout/edit_divider"/>
+           	
+
+			<LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            	<TextView 
+	            	android:id="@+id/flag_label"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/flag_label"
+			        style="@style/CustomEventLabel"
+		        />
+	           	<Button
+	           		android:id="@+id/select_flag_btn"
+			        android:layout_width="100dp"
+			        android:layout_marginLeft="10dp"
+			        android:gravity="left|center_vertical"
+			        android:layout_height="wrap_content"
+			        android:text="@string/select_flag"
+			        />
+			</LinearLayout>
+			
+			<!-- Data section -->
+			<include layout="@layout/edit_divider"/>
+			
+			<LinearLayout
+				android:id="@+id/data_section"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="6dip"
+			    android:orientation="horizontal"
+			    android:baselineAligned="false"
+			    android:gravity="top"
+			    >
+			
+			    <TextView 
+		           	android:id="@+id/data_label"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_weight="1"
+			        android:text="@string/data_label"
+			        style="@style/CustomEventLabel"
+		        />
+			
+			    <ImageButton android:id="@+id/add_data"
+			        style="@style/PlusButton"
+			        android:layout_gravity="right|center_vertical"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			     />
+			</LinearLayout>
+			
+			<LinearLayout
+				android:id="@+id/data_container"
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="6dip"
+			    android:orientation="vertical"
+			    >
+			    
+			</LinearLayout>    
+		</LinearLayout>
+	
+
+	   	<LinearLayout
+	   		android:id="@+id/button_panel"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:layout_marginTop="1dp"
+			android:background="#333"
+			style="@android:style/ButtonBar"
+			>
+			<Button
+				android:id="@+id/save_btn"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:text="@string/save"
+				>
+			</Button>
+			<Button
+				android:id="@+id/discard_btn"
+				android:layout_height="wrap_content"
+				android:layout_width="0dp"
+				android:layout_weight="1"
+				android:text="@string/not_save"
+				>
+			</Button>
+			
+		</LinearLayout>
+     
+     </LinearLayout>
+   
+</ScrollView>
+
+	
+        
