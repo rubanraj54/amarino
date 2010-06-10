@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/event"
+	android:layout_width="fill_parent" 
+	android:layout_height="wrap_content"
+	android:padding="5dp"
+	>
+
+	<TextView android:id="@+id/event_name" 
+    	android:layout_width="fill_parent"
+		android:layout_height="wrap_content" 
+		android:layout_alignParentTop="true"
+		android:textSize="18sp"
+		android:textColor="#333"
+		android:textStyle="bold"
+		android:fadingEdge="vertical"
+		 />
+		
+	<TextView android:id="@+id/event_detail" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_alignParentBottom="true"
+		android:layout_below="@id/event_name"
+		android:textSize="16sp"
+		android:textColor="#333"
+		android:fadingEdge="vertical" />
+		
+	<TextView android:id="@+id/event_flag" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentTop="true"
+		android:layout_above="@id/event_detail"
+		android:layout_alignBaseline="@id/event_name"
+		android:textSize="12sp"
+		android:textColor="#333"
+		android:paddingRight="5dp"
+		android:fadingEdge="vertical" />
+</RelativeLayout>

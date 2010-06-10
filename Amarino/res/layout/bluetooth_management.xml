@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="#555"
+  android:orientation="vertical"
+  >
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:orientation="horizontal"
+		android:layout_weight="4"
+		android:layout_marginBottom="1dp"
+	>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			android:layout_marginRight="1dp"
+			>
+			<ImageButton
+				android:id="@+id/bluetooth_on_off"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent" 
+				android:layout_weight="1"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:background="#333"
+				android:src="@drawable/bluetooth_ball_128"
+				>
+			</ImageButton>
+			
+			<TextView
+				android:id="@+id/enable_disable_bt_tv"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="Enable/Disable BT"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+		</LinearLayout>
+	
+	
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_weight="1"
+			android:orientation="vertical"
+			>
+			<ImageButton
+				android:id="@+id/scan_devices"
+				android:layout_height="fill_parent"
+				android:layout_width="fill_parent"
+				android:layout_weight="1"
+				android:layout_gravity="center"
+				android:scaleType="fitCenter"
+				android:background="#333"
+				android:src="@drawable/scan_devices"
+				>
+			</ImageButton>
+			
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/scan_for_devices"
+				android:paddingBottom="3dp"
+				android:gravity="center"
+				android:background="#333"
+				android:textSize="12sp">
+			</TextView>
+
+		</LinearLayout>
+	
+	</LinearLayout>
+	
+
+
+  
+    <!-- List of Devices section -->
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_weight="1"
+		android:orientation="vertical"
+		android:padding="15dp"
+		android:background="#333"
+		>
+		
+		<FrameLayout
+			android:layout_width="fill_parent"
+			android:layout_height="28dp"
+		>
+			<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:text="@string/list_of_devices"
+				android:textColor="#ddd"
+				android:gravity="center" 
+				android:padding="3dp"
+				android:background="#222" 
+				android:textSize="16sp">
+			</TextView>
+			<ProgressBar 
+				android:id="@+id/progress_scan"
+		        style="?android:attr/progressBarStyleSmall"
+		        android:layout_width="wrap_content"
+		        android:layout_gravity="right|center_vertical" 
+		        android:layout_height="wrap_content" 
+		        android:layout_marginRight="5dp"/>
+		</FrameLayout>
+		
+		<ListView
+			android:id="@id/android:list"
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent"
+			android:background="#555" android:cacheColorHint="#555">
+		</ListView>
+	</LinearLayout>
+</LinearLayout>

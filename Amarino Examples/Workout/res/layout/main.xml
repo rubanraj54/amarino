@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <edu.mit.media.hlt.workshop.workout.GraphView
+    	android:id="@+id/graph"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="0px"
+	    android:layout_weight="40"
+    />
+	<TextView 
+		android:id="@+id/value"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="0px"
+	    android:layout_weight="10"
+	    android:text="@string/hello"
+	    android:textSize="24sp"
+	    android:gravity="center"
+	    android:background="#fff"
+    />
+    
+    <TextView 
+		android:id="@+id/counter"
+	    android:layout_width="fill_parent" 
+	    android:layout_height="0px"
+	    android:layout_weight="50"
+	    android:text="0"
+	    android:textSize="150dp"
+	    android:gravity="center|top"
+	    android:textStyle="bold"
+	    android:background="#fff"
+    />
+</LinearLayout>

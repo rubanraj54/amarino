@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+  Amarino - A prototyping software toolkit for Android and Arduino
+  Copyright (c) 2009 Bonifaz Kaufmann.  All right reserved.
+  
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or (at your option) any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ -->
+
+<LinearLayout
+	  xmlns:android="http://schemas.android.com/apk/res/android"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:layout_marginBottom="3dip"
+	  android:orientation="horizontal"
+	  android:baselineAligned="false"
+      android:gravity="top"
+      android:background="#333"
+	  >
+  
+  		<Button 
+	  		android:id="@+id/select_type_btn"
+	  		android:layout_width="80dp"
+	        android:layout_height="wrap_content"
+	        android:gravity="left|center_vertical"
+	        android:singleLine="true"
+	        android:ellipsize="marquee"
+	        android:fadingEdge="horizontal"
+	  		android:text="@string/type"
+  		/>
+  		
+  		<EditText 
+	    	android:id="@+id/key_data"
+	        android:layout_width="0dp"
+	        android:layout_weight="1"
+	        android:layout_height="wrap_content"
+	        style="@style/CustomEventEditText"
+	        android:hint="@string/key_hint"
+	        />
+  		
+  		<ImageButton 
+  			android:id="@+id/minus_data"
+  			android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        style="@style/MinusButton"
+	     />
+
+</LinearLayout>
