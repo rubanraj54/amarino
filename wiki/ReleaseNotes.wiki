@@ -1,5 +1,5 @@
 #labels Featured
-_comments and changes to each Amarino revision_
+#_comments and changes to each Amarino revision_
 
 =Amarino 0.5=
   * this version uses UUID and SDP lookup to find a free port for opening a socket to a Bluetooth module
@@ -9,4 +9,3 @@ _comments and changes to each Amarino revision_
 
 =Amarino 0.4=
   * first public release
-
