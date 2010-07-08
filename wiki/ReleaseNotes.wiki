@@ -1,6 +1,11 @@
 #summary comments and changes to each Amarino revision
 #labels Featured
 
+=Amarino 0.53=
+  * fixed bug with sendDataToArduino functions in Amarino API (Amarino.java)
+  * added background image which appears on the start screen when device list is empty
+  * updated the AmarinoLibrary.jar file to match the latest version
+
 =Amarino 0.52=
   * added fall back to open directly bluetooth port 1 when SDP was not successful (i.e. on older phones)
   * updated AmarinoPluginBundle: receive sms event has been added and xml file refactoring (added styles to reduce code)
