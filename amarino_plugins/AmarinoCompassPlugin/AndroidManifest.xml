@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="at.abraxas.amarino.example.plugin.compass"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity
+            android:name="at.abraxas.amarino.plugin.InfoActivity"
+            android:label="@string/app_name"
+            android:icon="@drawable/icon">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.INFO" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".MyEditActivity"
+                  android:label="@string/plugin_name"
+                  android:icon="@drawable/icon" android:exported="true">
+            <intent-filter>
+                <action android:name="amarino.intent.action.EDIT_PLUGIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <service android:name=".MyBackgroundService" />
+
+    	<receiver android:name=".MyReceiver">
+	    	<intent-filter>
+	    		<action android:name="amarino.intent.action.ENABLE" />
+	    		<action android:name="amarino.intent.action.DISABLE" />
+	    	</intent-filter>
+		</receiver>
+		
+	</application>
+    
+    <uses-sdk android:minSdkVersion="3" android:targetSdkVersion="7"/>
+
+</manifest> 
