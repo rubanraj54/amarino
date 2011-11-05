@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- General -->
+    <string name="app_name">AmarinoPlugInGesture</string>
+    <string name="plugin_name">Gesture</string>
+    <string name="plugin_desc">Detects certain gestures.
+    </string>
+    <string name="service_class_name">GestureService</string>
+    <string name="plugin_extended_desc">\n\nSupported gestures are:
+    \n\n - Flip Over - is sent when the phone is hold upside down
+    \n - Revert Back - is sent when the phone leaves the Flip Over state
+    \n\nTo indicate which type of gesture is sent, follwoing mapping is applied.
+    \n\nFlip Over = 1
+    \nRevert Back = 2
+    \n\ne.g. When the phone is put flat on a table with its face down, this plug-in
+    will send an integer with value 1.\nWhen the phone orientation was in Flip Over mode and the orientation has changed,
+    then an integer value 2 is sent once to indicate that the Flip Over state has been left.</string>
+    
+    <!-- EditActivity -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+	<string name="select_visualizer">Data Visualizer</string>
+    
+</resources>
