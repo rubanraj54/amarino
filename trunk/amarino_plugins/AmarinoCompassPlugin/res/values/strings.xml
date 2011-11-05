@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<!-- This part must be always set to have a functional plug-in, just replace the values according to your plug-in -->
+    <string name="app_name">Amarino Compass Plugin</string>
+    <string name="plugin_name">Example Compass Sensor</string>
+    <string name="plugin_desc">Sends heading as int value [0-359]</string>
+    <string name="service_class_name">MyBackgroundService</string>
+    
+    
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+	<string name="select_visualizer">Data Visualizer</string>
+	
+    
+    <!-- This part is specific for your application -->
+    <string name="frequency_desc">Set how fast compass sensor data should be sent.</string>
+    <string name="very_slow">very slow</string>
+    <string name="slow">slow</string>
+    <string name="medium">medium</string>
+    <string name="fast">fast</string>
+    <string name="very_fast">very fast</string>
+</resources>
