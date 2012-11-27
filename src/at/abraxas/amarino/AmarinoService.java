@@ -158,14 +158,14 @@ public class AmarinoService extends Service {
 		
 		/* --- CONNECT and DISCONNECT part --- */
 		String address = intent.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
-		String type = String.valueOf(intent.getIntExtra(AmarinoIntent.EXTRA_DEVICE_TYPE, -1));
+		int type = intent.getIntExtra(AmarinoIntent.EXTRA_DEVICE_TYPE, -1);
 				//StringExtra(AmarinoIntent.EXTRA_DEVICE_TYPE);
 		if (address == null) {
 			Logger.d(TAG, "EXTRA_DEVICE_ADDRESS not found!");
 			return START_NOT_STICKY;
 		}
 
-		if (type == null) {
+		if (type == -1) {
 			Logger.d(TAG, "EXTRA_DEVICE_TYPE not found!");
 			return START_NOT_STICKY;
 		}
@@ -182,11 +182,11 @@ public class AmarinoService extends Service {
 		else {
 			if (AmarinoIntent.ACTION_CONNECT.equals(action)){
 				Logger.d(TAG, "ACTION_CONNECT request received");
-				connect(address, Integer.parseInt(type));
+				connect(address, type);
 			}
 			else if (AmarinoIntent.ACTION_DISCONNECT.equals(action)){
 				Logger.d(TAG, "ACTION_DISCONNECT request received");
-				disconnect(address, Integer.parseInt(type));
+				disconnect(address, type);
 			}
 		}
 
@@ -201,7 +201,7 @@ public class AmarinoService extends Service {
 		if (pluginId == -1) {
 			// intent sent from another app which is not a plugin
 			final String address = intent.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
-			final int type = Integer.getInteger(intent.getStringExtra(AmarinoIntent.EXTRA_DATA_TYPE));
+			final int type = intent.getIntExtra(AmarinoIntent.EXTRA_DATA_TYPE, -1);
 			if (address == null) {
 				Logger.d(TAG, "Data not sent! EXTRA_DEVICE_ADDRESS not set.");
 				return;

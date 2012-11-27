@@ -182,6 +182,14 @@ public class Monitoring extends Activity implements LogListener, View.OnClickLis
 		intent.putExtra(AmarinoIntent.EXTRA_FLAG, selectedFlag);
 		intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_EXTRA);
 		intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
+		
+		//TODO: find a better way do differenciate between devicetypes ...
+		if(address.contains("."))
+			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_TYPE, Device.LANDEVICE);
+		
+		if(address.contains(":"))
+			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_TYPE, Device.BTDEVICE);
+			
 		Monitoring.this.startService(intent);
 	}
 	
