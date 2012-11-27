@@ -66,7 +66,7 @@ public class EventListActivity extends ListActivity {
 	private static final int MENU_ITEM_REMOVE_ALL = 10;
 	private static final int MENU_ITEM_DISABLE_ALL = 11;
 	
-	BTDevice device;
+	Device device;
 	EventListAdapter eventListAdapter;
 	PlugInListAdapter pluginListAdapter;
 	AmarinoDbAdapter db;
@@ -82,7 +82,7 @@ public class EventListActivity extends ListActivity {
 		
 		Intent intent = getIntent();
 		if (intent != null){
-			device = (BTDevice) intent.getSerializableExtra(AmarinoIntent.EXTRA_DEVICE);
+			device = (Device) intent.getSerializableExtra(AmarinoIntent.EXTRA_DEVICE);
 			if (device == null) {
 				// there is something wrong, should never happen
 			}
