@@ -681,6 +681,8 @@ public class Amarino {
 		return intent;
 	}
 
+	
+	//TODO: add DEVICE_TYPE
 	private static Intent getSendIntent(String address, int dataType, char flag){
 		Intent intent = new Intent(AmarinoIntent.ACTION_SEND);
 		intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
