@@ -23,12 +23,16 @@ import it.gerdavax.easybluetooth.LocalDevice;
 import it.gerdavax.easybluetooth.ReadyListener;
 import it.gerdavax.easybluetooth.RemoteDevice;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -557,6 +561,9 @@ public class AmarinoService extends Service {
 		
 		public abstract void cancel();
 		
+	    /* Call this from the main Activity to send data to the remote device */
+		public abstract void write(byte[] bytes);
+		
 		protected void forwardData(String data){
 			char c;
 			for (int i=0;i<data.length();i++){
@@ -572,9 +579,10 @@ public class AmarinoService extends Service {
 //						// wait for the next char to be sent
 //					}
 				}
-				else if (c == MessageBuilder.ACK_FLAG){
+				else if (c == MessageBuilder.ACK_FLAG || c == '#'){
 					// message complete send the data
 					forwardDataToOtherApps(forwardBuffer.toString());
+	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
 					forwardBuffer = new StringBuffer();
 				}
 				else {
@@ -590,14 +598,6 @@ public class AmarinoService extends Service {
             intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_EXTRA);
             intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
             sendBroadcast(intent);
-		}
-		
-	    /* Call this from the main Activity to send data to the remote device */
-		public void write(byte[] bytes){
-	        try {
-	            outStream.write(bytes);
-	            Logger.d(TAG, "send to Arduino: " + new String(bytes));
-	        } catch (IOException e) { }
 		}
 		
 		public void setInputStream(InputStream inStream){
@@ -736,6 +736,15 @@ public class AmarinoService extends Service {
 	            sendConnectionDisconnected(address);
 	        } catch (IOException e) { Log.e(TAG, "cannot close socket to " + address); }
 	    }
+	    
+	    /* Call this from the main Activity to send data to the remote device */
+		@Override
+	    public void write(byte[] bytes){
+	        try {
+	            outStream.write(bytes);
+	            Logger.d(TAG, "send to Arduino: " + new String(bytes));
+	        } catch (IOException e) { }
+		}
 	}
 
 	/**
@@ -752,7 +761,7 @@ public class AmarinoService extends Service {
 		@Override
 		public void run() {
 			try {
-				socket = new Socket(address, 80);
+				socket = new Socket(InetAddress.getByName(address), 80);
 			} catch (UnknownHostException e) {
 				Logger.d(TAG, "Unknown Host: "+ address);
 
@@ -818,6 +827,18 @@ public class AmarinoService extends Service {
 	        //super.outStream = tmpOut;
 		}
 
+	    /* Call this from the main Activity to send data to the remote device */
+		@Override
+		public void write(byte[] bytes){
+	        try {
+//	        	PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())),true);                                         
+//	        	out.println(new String(bytes)); 
+	        	outStream.write(bytes);
+	        	outStream.flush();
+	            Logger.d(TAG, "send to Arduino: " + new String(bytes));
+	        } catch (IOException e) { }
+		}
+		
 		@Override
 		public void cancel() {
 	        try {
