@@ -823,6 +823,9 @@ public class AmarinoService extends Service {
 	            //tmpOut = mSocket.getOutputStream();
 	        } catch (Exception e) { Log.e(TAG, "problem creating in/outPutStream: " + e);}
 
+	        HeartbeatThread heartbeat = new HeartbeatThread(mSocket, this);
+	        heartbeat.start();
+	        
 	        //super.setInputStream(tmpIn);
 	        //super.outStream = tmpOut;
 		}
@@ -846,7 +849,61 @@ public class AmarinoService extends Service {
 	            sendConnectionDisconnected(address);
 	        } catch (IOException e) { Log.e(TAG, "cannot close socket to " + address); }
 		}
+	}
+	
+	private class HeartbeatThread extends Thread{
+		private OutputStream outStream;
+		private ConnectedThread ct;
+		
+		private static final int TIMEOUT_THRESHHOLD = 2;
+		
+		private boolean stop = false;
+		
+		public HeartbeatThread(Socket socket, ConnectedThread ct){
+			try {
+				this.outStream = socket.getOutputStream();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.ct = ct;
 
+		}
+		
+		public void run(){
+			int timeouts = 0;
+			while(!stop){
+				String message = MessageBuilder.ALIVE_MSG;
+				
+				try {
+					outStream.write(message.getBytes("ISO-8859-1"));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					timeouts++;
+					Logger.d(TAG, "Heartbeat timed out ("+timeouts+"). Threshhold is "+TIMEOUT_THRESHHOLD);
+
+					if(timeouts >= TIMEOUT_THRESHHOLD){
+						Logger.d(TAG, "Heartbeat Thresshold reached, connection lost");
+						this.stopp();
+					}
+				}
+					
+				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		public void stopp(){
+			this.stop = true;
+			ct.cancel();
+		}
 	}
 	
 	/* ---------- BroadcastReceiver ---------- */
