@@ -71,8 +71,6 @@ public class MessageBuilder {
 			return null;
 		}
 		
-		
-		//TODO: maybe use delimiter after length of data
 		switch (dataType){
 		case AmarinoIntent.STRING_EXTRA:
 			String s = intent.getStringExtra(AmarinoIntent.EXTRA_DATA);

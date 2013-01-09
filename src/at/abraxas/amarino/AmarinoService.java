@@ -53,6 +53,7 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 import at.abraxas.amarino.log.Logger;
 
 /**
@@ -600,12 +601,8 @@ public class AmarinoService extends Service {
             sendBroadcast(intent);
 		}
 		
-		public void setInputStream(InputStream inStream){
-			this.inStream = inStream;
-		}
-		
-		public void setOutputStream(OutputStream outStream){
-			this.outStream = outStream;
+		public String getAddress(){
+			return address;
 		}
 	}
 	
@@ -726,6 +723,10 @@ public class AmarinoService extends Service {
 
 	        inStream = tmpIn;
 	        outStream = tmpOut;
+	        
+	        
+	        HeartbeatThread heartbeat = new HeartbeatThread(outStream, this);
+	        heartbeat.start();
 	    }
 
 	    /* Call this from the main Activity to shutdown the connection */
@@ -817,17 +818,15 @@ public class AmarinoService extends Service {
 	        // Get the input and output streams, using temp objects because
 	        // member streams are final
 	        try {
-	        	super.setInputStream(mSocket.getInputStream());
-	        	super.setOutputStream(mSocket.getOutputStream());
-	            //tmpIn = mSocket.getInputStream();
-	            //tmpOut = mSocket.getOutputStream();
+	            tmpIn = mSocket.getInputStream();
+	            tmpOut = mSocket.getOutputStream();
 	        } catch (Exception e) { Log.e(TAG, "problem creating in/outPutStream: " + e);}
 
-	        HeartbeatThread heartbeat = new HeartbeatThread(mSocket, this);
-	        heartbeat.start();
+	        outStream = tmpOut;
+	        inStream = tmpIn;
 	        
-	        //super.setInputStream(tmpIn);
-	        //super.outStream = tmpOut;
+	        HeartbeatThread heartbeat = new HeartbeatThread(outStream, this);
+	        heartbeat.start();
 		}
 
 	    /* Call this from the main Activity to send data to the remote device */
@@ -859,15 +858,11 @@ public class AmarinoService extends Service {
 		
 		private boolean stop = false;
 		
-		public HeartbeatThread(Socket socket, ConnectedThread ct){
-			try {
-				this.outStream = socket.getOutputStream();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		public HeartbeatThread(OutputStream out, ConnectedThread ct){
+			this.outStream = out;
 			this.ct = ct;
-
+			
+			Logger.d(TAG, "Heartbeat startet for "+ ct.getAddress());
 		}
 		
 		public void run(){
@@ -885,7 +880,8 @@ public class AmarinoService extends Service {
 					Logger.d(TAG, "Heartbeat timed out ("+timeouts+"). Threshhold is "+TIMEOUT_THRESHHOLD);
 
 					if(timeouts >= TIMEOUT_THRESHHOLD){
-						Logger.d(TAG, "Heartbeat Thresshold reached, connection lost");
+						Logger.d(TAG, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost");
+						Toast.makeText(AmarinoService.this, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost", Toast.LENGTH_SHORT).show();
 						this.stopp();
 					}
 				}
