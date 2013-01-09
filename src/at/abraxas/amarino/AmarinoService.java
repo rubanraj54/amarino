@@ -884,6 +884,8 @@ public class AmarinoService extends Service {
 						//Toast.makeText(AmarinoService.this, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost", Toast.LENGTH_SHORT).show();
 						this.stopp();
 					}
+				} catch (Exception e) {
+					Logger.d(TAG, "General Exception");
 				}
 					
 				
