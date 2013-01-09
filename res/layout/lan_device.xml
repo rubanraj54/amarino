@@ -12,8 +12,8 @@
         android:text="@string/hello" />
 
     <EditText
-        android:inputType="number"
-        android:digits=".0123456789"
+		android:inputType="numberDecimal|number"
+        android:digits="0123456789."
         android:id="@+id/IPText01"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
