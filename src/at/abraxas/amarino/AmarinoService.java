@@ -881,7 +881,7 @@ public class AmarinoService extends Service {
 
 					if(timeouts >= TIMEOUT_THRESHHOLD){
 						Logger.d(TAG, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost");
-						Toast.makeText(AmarinoService.this, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost", Toast.LENGTH_SHORT).show();
+						//Toast.makeText(AmarinoService.this, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost", Toast.LENGTH_SHORT).show();
 						this.stopp();
 					}
 				}
