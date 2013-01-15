@@ -60,6 +60,7 @@ public class MessageBuilder {
 
 	public static String getMessage(Intent intent){
 		final int dataType = intent.getIntExtra(AmarinoIntent.EXTRA_DATA_TYPE, -1);
+		System.out.println("Datentyp: " + dataType);
 		if (dataType == -1) {
 			Logger.d(TAG, "EXTRA_DATA_TYPE not found");
 			return null;
@@ -76,55 +77,55 @@ public class MessageBuilder {
 			String s = intent.getStringExtra(AmarinoIntent.EXTRA_DATA);
 			//Logger.d(TAG, "plugin says: " + s);
 			if (s==null) return "0" + ACK_FLAG;
-			return flag + STRING_FLAG + "1" + FLAG_DELIMITER + s + ACK_FLAG;
+			return flag + String.valueOf(STRING_FLAG) + "1" + FLAG_DELIMITER + s + ACK_FLAG;
 			
 		/* double is too large for Arduinos, better not to use this datatype */
 		case AmarinoIntent.DOUBLE_EXTRA:
 			double d = intent.getDoubleExtra(AmarinoIntent.EXTRA_DATA, -1);
 			//Logger.d(TAG, "plugin says: " + d);
-			return flag + DOUBLE_FLAG + "1" + FLAG_DELIMITER + (d + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(DOUBLE_FLAG) + "1" + FLAG_DELIMITER + (d + String.valueOf(ACK_FLAG));
 			
 		/* byte is byte. In Arduino a byte stores an 8-bit unsigned number, from 0 to 255. */
 		case AmarinoIntent.BYTE_EXTRA:
 			byte by = intent.getByteExtra(AmarinoIntent.EXTRA_DATA, (byte)-1);
 			//Logger.d(TAG, "plugin says: " + by);
-			return flag + BYTE_FLAG + "1" + FLAG_DELIMITER + (by + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(BYTE_FLAG) + "1" + FLAG_DELIMITER + (by + String.valueOf(ACK_FLAG));
 			
 		/* int in Android is long in Arduino (4 bytes) */
 		case AmarinoIntent.INT_EXTRA:
 			int i = intent.getIntExtra(AmarinoIntent.EXTRA_DATA, -1);
 			//Logger.d(TAG, "plugin says: " + i);
-			return flag + INT_FLAG + "1" + FLAG_DELIMITER + (i + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(INT_FLAG) + "1" + FLAG_DELIMITER + (i + String.valueOf(ACK_FLAG));
 			
 		/* short in Android is like int in Arduino (2 bytes) 2^15 */
 		case AmarinoIntent.SHORT_EXTRA:
 			short sh = intent.getShortExtra(AmarinoIntent.EXTRA_DATA, (short)-1);
 			//Logger.d(TAG, "plugin says: " + sh);
-			return flag + SHORT_FLAG + "1" + FLAG_DELIMITER + (sh + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(SHORT_FLAG) + "1" + FLAG_DELIMITER + (sh + String.valueOf(ACK_FLAG));
 
 		/* float in Android is float in Arduino (4 bytes) */
 		case AmarinoIntent.FLOAT_EXTRA:
 			float f = intent.getFloatExtra(AmarinoIntent.EXTRA_DATA, -1f);
 			//Logger.d(TAG, "plugin says: " + f);
-			return flag + FLOAT_FLAG + "1" + FLAG_DELIMITER + (f + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(FLOAT_FLAG) + "1" + FLAG_DELIMITER + (f + String.valueOf(ACK_FLAG));
 		
 		/* boolean in Android is in Arduino 0=false, 1=true */
 		case AmarinoIntent.BOOLEAN_EXTRA:
 			boolean b = intent.getBooleanExtra(AmarinoIntent.EXTRA_DATA, false);
 			//Logger.d(TAG, "plugin says: " + b);
-			return flag + BOOLEAN_FLAG + "1" + FLAG_DELIMITER + (((b) ? 1 : 0) + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(BOOLEAN_FLAG) + "1" + FLAG_DELIMITER + (((b) ? 1 : 0) + String.valueOf(ACK_FLAG));
 			
 		/* char is char. In Arduino stored in 1 byte of memory */
 		case AmarinoIntent.CHAR_EXTRA:
 			char c = intent.getCharExtra(AmarinoIntent.EXTRA_DATA, 'x');
 			//Logger.d(TAG, "plugin says: " + c);
-			return flag + CHAR_FLAG + "1" + FLAG_DELIMITER + (c + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(CHAR_FLAG) + "1" + FLAG_DELIMITER + (c + String.valueOf(ACK_FLAG));
 		
 		/* long in Android does not fit in Arduino data types, better not to use it */
 		case AmarinoIntent.LONG_EXTRA:
 			long l = intent.getLongExtra(AmarinoIntent.EXTRA_DATA, -1l);
 			//Logger.d(TAG, "plugin says: " + l);
-			return flag + LONG_FLAG + "1" + FLAG_DELIMITER + (l + String.valueOf(ACK_FLAG));
+			return flag + String.valueOf(LONG_FLAG) + "1" + FLAG_DELIMITER + (l + String.valueOf(ACK_FLAG));
 
 		case AmarinoIntent.INT_ARRAY_EXTRA:
 			int[] ints = intent.getIntArrayExtra(AmarinoIntent.EXTRA_DATA);
@@ -133,7 +134,7 @@ public class MessageBuilder {
 				for (int integer : ints){
 					msg += String.valueOf(integer) + DATA_DELIMITER;
 				}
-				return flag + INT_FLAG + ints.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(INT_FLAG) + ints.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -144,7 +145,7 @@ public class MessageBuilder {
 				for (char character : chars){
 					msg += String.valueOf(character) + DATA_DELIMITER;
 				}
-				return flag + CHAR_FLAG + chars.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(CHAR_FLAG) + chars.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -155,7 +156,7 @@ public class MessageBuilder {
 				for (byte oneByte : bytes){
 					msg += String.valueOf(oneByte) + DATA_DELIMITER;
 				}
-				return flag + BYTE_FLAG + bytes.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(BYTE_FLAG) + bytes.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -166,7 +167,7 @@ public class MessageBuilder {
 				for (short shorty : shorts){
 					msg += String.valueOf(shorty) + DATA_DELIMITER;
 				}
-				return flag + SHORT_FLAG + shorts.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(SHORT_FLAG) + shorts.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -177,7 +178,7 @@ public class MessageBuilder {
 				for (String str : strings){
 					msg += String.valueOf(str) + DATA_DELIMITER;
 				}
-				return flag + STRING_FLAG + strings.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(STRING_FLAG) + strings.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -188,7 +189,7 @@ public class MessageBuilder {
 				for (double singleDouble : doubles){ // :-)
 					msg += String.valueOf(singleDouble) + DATA_DELIMITER;
 				}
-				return flag + DOUBLE_FLAG + doubles.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(DOUBLE_FLAG) + doubles.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -199,7 +200,7 @@ public class MessageBuilder {
 				for (float fl : floats){
 					msg += String.valueOf(fl) + DATA_DELIMITER;
 				}
-				return flag + FLOAT_FLAG + floats.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(FLOAT_FLAG) + floats.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -210,7 +211,7 @@ public class MessageBuilder {
 				for (boolean bool : booleans){
 					msg += String.valueOf((bool) ? 1 : 0) + DATA_DELIMITER;
 				}
-				return flag + BOOLEAN_FLAG + booleans.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(BOOLEAN_FLAG) + booleans.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 			
@@ -221,7 +222,7 @@ public class MessageBuilder {
 				for (long longo : longs){
 					msg += String.valueOf(longo) + DATA_DELIMITER;
 				}
-				return flag + LONG_FLAG + longs.length + FLAG_DELIMITER  + finishingMessage(msg);
+				return flag + String.valueOf(LONG_FLAG) + longs.length + FLAG_DELIMITER  + finishingMessage(msg);
 			}
 			break;
 
