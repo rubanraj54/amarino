@@ -711,6 +711,7 @@ public class AmarinoService extends Service {
 	    public ConnectedBTThread(BtSocket socket, String address) {
 	    	super(address);
 	        mSocket = socket;
+	        
 	        InputStream tmpIn = null;
 	        OutputStream tmpOut = null;
 	        
@@ -720,7 +721,7 @@ public class AmarinoService extends Service {
 	            tmpIn = socket.getInputStream();
 	            tmpOut = socket.getOutputStream();
 	        } catch (Exception e) { }
-
+        
 	        inStream = tmpIn;
 	        outStream = tmpOut;
 	        
@@ -833,8 +834,6 @@ public class AmarinoService extends Service {
 		@Override
 		public void write(byte[] bytes){
 	        try {
-//	        	PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())),true);                                         
-//	        	out.println(new String(bytes)); 
 	        	outStream.write(bytes);
 	        	outStream.flush();
 	            Logger.d(TAG, "send to Arduino: " + new String(bytes));
