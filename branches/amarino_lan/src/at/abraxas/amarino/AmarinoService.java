@@ -528,6 +528,7 @@ public class AmarinoService extends Service {
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
+		private HeartbeatThread heartbeat;
 		
 		public ConnectedThread(String address){
 			this.address = address;
@@ -566,9 +567,22 @@ public class AmarinoService extends Service {
 		public abstract void write(byte[] bytes);
 		
 		protected void forwardData(String data){
+			String flags = data.split(" ")[0];
+			String values = data.split(" ")[1];
+			
+			//Data type flag should be first char of message
+			int dataType = flags.charAt(0);
+			//the rest of the message should indicate the number of values
+			int numValues = Integer.parseInt(flags.substring(1, flags.length()));
+			
+			boolean isArray = false;
+			if(numValues > 1) isArray = true;
+			
+			Logger.d(TAG, "Datatype: "+dataType+" - numValues: "+numValues);
+			
 			char c;
-			for (int i=0;i<data.length();i++){
-				c = data.charAt(i);
+			for (int i=0;i<values.length();i++){
+				c = values.charAt(i);
 				if (c == MessageBuilder.ARDUINO_MSG_FLAG){
 					// TODO this could be used to determine the data type
 //					if (i+1<data.length()){
@@ -582,9 +596,19 @@ public class AmarinoService extends Service {
 				}
 				else if (c == MessageBuilder.ACK_FLAG || c == '#'){
 					// message complete send the data
-					forwardDataToOtherApps(forwardBuffer.toString());
+					forwardDataToOtherApps(forwardBuffer.toString(), dataType, isArray);
 	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
 					forwardBuffer = new StringBuffer();
+				} else if(c == MessageBuilder.HB_ON_FLAG){
+					Intent intent = new Intent(AmarinoIntent.ACTION_HB_ON);
+					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
+					Logger.d(TAG, "Received HB_ON");
+					sendBroadcast(intent);
+				} else if(c == MessageBuilder.HB_OFF_FLAG){
+					Intent intent = new Intent(AmarinoIntent.ACTION_HB_OFF);
+					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
+					Logger.d(TAG, "Received HB_OFF");
+					sendBroadcast(intent);
 				}
 				else {
 					forwardBuffer.append(c);
@@ -592,17 +616,68 @@ public class AmarinoService extends Service {
 			}
 		}
 		
-		protected void forwardDataToOtherApps(String msg){
+		protected void forwardDataToOtherApps(String msg, int dataType, boolean isArray){
 	    	Logger.d(TAG, "Arduino says: " + msg);
 	    	Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
             intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
-            intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_EXTRA);
+            addDataType(intent, dataType, isArray);
             intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
             sendBroadcast(intent);
 		}
 		
+		protected void addDataType(Intent intent, int dataType, boolean isArray){
+			switch(dataType){
+			case MessageBuilder.BOOLEAN_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BOOLEAN_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BOOLEAN_EXTRA);
+				break;
+			case MessageBuilder.BYTE_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_EXTRA);
+				break;
+			case MessageBuilder.CHAR_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.CHAR_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.CHAR_EXTRA);
+				break;
+			case MessageBuilder.DOUBLE_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.DOUBLE_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.DOUBLE_EXTRA);
+				break;
+			case MessageBuilder.FLOAT_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.FLOAT_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.FLOAT_EXTRA);
+				break;
+			case MessageBuilder.INT_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_EXTRA);
+				break;
+			case MessageBuilder.LONG_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.LONG_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.LONG_EXTRA);
+				break;
+			case MessageBuilder.SHORT_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.SHORT_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.SHORT_EXTRA);
+				break;
+			case MessageBuilder.STRING_FLAG : 
+				if(isArray) intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_ARRAY_EXTRA);
+				else intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_EXTRA);
+				break;
+			}
+			
+		}
+		
 		public String getAddress(){
 			return address;
+		}
+
+		public void setHeartbeatThread(HeartbeatThread heartbeat) {
+			this.heartbeat = heartbeat;
+			
+		}
+		
+		public HeartbeatThread getHeartbeatThread(){
+			return heartbeat;
 		}
 	}
 	
@@ -724,10 +799,6 @@ public class AmarinoService extends Service {
         
 	        inStream = tmpIn;
 	        outStream = tmpOut;
-	        
-	        
-	        HeartbeatThread heartbeat = new HeartbeatThread(outStream, this);
-	        heartbeat.start();
 	    }
 
 	    /* Call this from the main Activity to shutdown the connection */
@@ -825,9 +896,6 @@ public class AmarinoService extends Service {
 
 	        outStream = tmpOut;
 	        inStream = tmpIn;
-	        
-	        HeartbeatThread heartbeat = new HeartbeatThread(outStream, this);
-	        heartbeat.start();
 		}
 
 	    /* Call this from the main Activity to send data to the remote device */
@@ -857,8 +925,8 @@ public class AmarinoService extends Service {
 		
 		private boolean stop = false;
 		
-		public HeartbeatThread(OutputStream out, ConnectedThread ct){
-			this.outStream = out;
+		public HeartbeatThread(ConnectedThread ct){
+			this.outStream = ct.outStream;
 			this.ct = ct;
 			
 			Logger.d(TAG, "Heartbeat startet for "+ ct.getAddress());
@@ -868,7 +936,7 @@ public class AmarinoService extends Service {
 			int timeouts = 0;
 			while(!stop){
 				String message = MessageBuilder.ALIVE_MSG;
-				
+		        Logger.d(TAG, "Heartbeat Started");
 				try {
 					outStream.write(message.getBytes("ISO-8859-1"));
 				} catch (UnsupportedEncodingException e) {
@@ -880,7 +948,6 @@ public class AmarinoService extends Service {
 
 					if(timeouts >= TIMEOUT_THRESHHOLD){
 						Logger.d(TAG, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost");
-						//Toast.makeText(AmarinoService.this, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost", Toast.LENGTH_SHORT).show();
 						this.stopp();
 					}
 				} catch (Exception e) {
@@ -898,7 +965,13 @@ public class AmarinoService extends Service {
 		}
 		
 		public void stopp(){
-			this.stop = true;
+			Intent intent = new Intent(AmarinoIntent.ACTION_HB_TIMEOUT);
+			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, ct.address);
+	        sendBroadcast(intent);
+	        
+			Logger.d(TAG, "Heartbeat Stopped");
+			
+	        this.stop = true;
 			ct.cancel();
 		}
 	}
@@ -916,6 +989,24 @@ public class AmarinoService extends Service {
 			if (AmarinoIntent.ACTION_SEND.equals(action)){
 				intent.setClass(context, AmarinoService.class);
 				startService(intent);
+			}
+			
+			if (AmarinoIntent.ACTION_HB_ON.equals(action)){
+				String address = intent.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
+				ConnectedThread ct = connections.get(address);
+
+		        HeartbeatThread heartbeat = new HeartbeatThread(ct);
+		        ct.setHeartbeatThread(heartbeat);
+		        
+		        heartbeat.start();
+			}
+			
+			if (AmarinoIntent.ACTION_HB_OFF.equals(action)){
+				String address = intent.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
+				ConnectedThread ct = connections.get(address);
+				
+				HeartbeatThread heartbeat = ct.getHeartbeatThread();
+				heartbeat.stopp();
 			}
 		}
 	};

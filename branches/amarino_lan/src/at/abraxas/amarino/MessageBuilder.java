@@ -48,6 +48,8 @@ public class MessageBuilder {
 	public static final char ALIVE_FLAG = 17;
 	public static final char ARDUINO_MSG_FLAG = 18;
 	public static final char ACK_FLAG = 19;
+	public static final char HB_ON_FLAG = 20;
+	public static final char HB_OFF_FLAG = 21;
 	public static final char FLUSH_FLAG = 27;
 	public static final char DATA_DELIMITER = ';'; // used to separate data strings
 	public static final char FLAG_DELIMITER = ' ';
