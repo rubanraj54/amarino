@@ -336,6 +336,21 @@ public interface AmarinoIntent {
 	public static final String ACTION_EDIT_PLUGIN = "amarino.intent.action.EDIT_PLUGIN";
 
 	/**
+	 * starts the heartbeat
+	 */
+	public static final String ACTION_HB_ON = "amarino.intent.action.HB_ON";
+	
+	/**
+	 * stops the heartbeat
+	 */
+	public static final String ACTION_HB_OFF = "amarino.intent.action.HB_OFF";
+	
+	/**
+	 * signals that the heartbeat is timed out
+	 */
+	public static final String ACTION_HB_TIMEOUT = "amarino.intent.action.HB_TIMEOUT";
+	
+	/**
 	 * Type: BTDevice
 	 */
 	static final String EXTRA_DEVICE = "amarino.intent.extra.DEVICE";
@@ -349,7 +364,9 @@ public interface AmarinoIntent {
 	 */
 	public static final String EXTRA_DEVICE_ADDRESS = "amarino.intent.extra.DEVICE_ADDRESS";
 
-	
+	/**
+	 * describes the connected device type (Bluetooth or LAN)
+	 */
 	public static final String EXTRA_DEVICE_TYPE = "amarino.intent.extra.DEVICE_TYPE";
 	
 	/**
@@ -532,5 +549,7 @@ public interface AmarinoIntent {
 	 * </p>
 	 */
 	public static final String EXTRA_VISUALIZER_MAX_VALUE = "amarino.intent.extra.VISUALIZER_MAX_VALUE";
+	
+	
 
 }

@@ -116,6 +116,9 @@ public class MainScreen extends ListActivity implements OnClickListener{
 			else if (AmarinoIntent.ACTION_PAIRING_REQUESTED.equals(action)){
 				msg.what = MyHandler.PAIRING_REQUESTED;
 			}
+			else if (AmarinoIntent.ACTION_HB_TIMEOUT.equals(action)){
+				msg.what = MyHandler.HB_TIMEOUT;
+			}
 			else return;
 			
 			msg.obj = address;
@@ -461,6 +464,7 @@ public class MainScreen extends ListActivity implements OnClickListener{
 		protected static final int DISCONNECTED = 2;
 		protected static final int CONNECTION_FAILED = 3;
 		protected static final int PAIRING_REQUESTED = 4;
+		protected static final int HB_TIMEOUT = 5;
 
 		@Override
 		public void handleMessage(Message msg) {
@@ -488,6 +492,11 @@ public class MainScreen extends ListActivity implements OnClickListener{
 						case PAIRING_REQUESTED:
 							Toast.makeText(MainScreen.this, 
 									"Device is not paired!\n\nPlease pull-down the notification bar to pair your device.\n\n", Toast.LENGTH_LONG).show();
+							setDeviceDisconnected(device, view, btn);
+							break;
+						case HB_TIMEOUT:
+							Toast.makeText(MainScreen.this, 
+									"Heartbeat timed out!\n\n Device disconnected", Toast.LENGTH_SHORT).show();
 							setDeviceDisconnected(device, view, btn);
 							break;
 					}
