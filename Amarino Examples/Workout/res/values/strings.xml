@@ -2,4 +2,9 @@
 <resources>
     <string name="hello">Hello World, Workout!</string>
     <string name="app_name">Workout</string>
+    <string name="menu_settings">Settings</string>
+    <string name="pref_threshold_key">threshold</string>
+    <string name="pref_threshold_name">Threshold</string>
+    <string name="pref_threshold_default">400</string>
+    <string name="pref_threshold_summary">current threshold: %s</string>
 </resources>
