@@ -23,9 +23,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 
-public class GraphView extends View {
+public class GraphView extends View implements OnTouchListener {
 
 	private Bitmap  mBitmap;
 	private Paint   mPaint = new Paint();
@@ -40,6 +43,9 @@ public class GraphView extends View {
     private float   mWidth;
     private float   maxValue = 1024f;
     
+    private boolean thresholdVisible = false;
+    private int threshold;
+    
     public GraphView(Context context) {
         super(context);
         init();
@@ -53,9 +59,12 @@ public class GraphView extends View {
     private void init(){
     	mColor = Color.argb(192, 64, 128, 64);
         mPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
+        //this.setOnTouchListener(this);
+        threshold = Preferences.getThreshold(getContext());
     }
     
-    public void addDataPoint(float value){
+
+	public void addDataPoint(float value){
         final Paint paint = mPaint;
         float newX = mLastX + mSpeed;
         final float v = mYOffset + value * mScale;
@@ -94,9 +103,9 @@ public class GraphView extends View {
     protected void onDraw(Canvas canvas) {
         synchronized (this) {
             if (mBitmap != null) {
+            	final Canvas cavas = mCanvas;
                 if (mLastX >= mWidth) {
                     mLastX = 0;
-                    final Canvas cavas = mCanvas;
                     cavas.drawColor(0xFFEEEEEE);
                     mPaint.setColor(0xFF779977);
                     cavas.drawLine(0, mYOffset, mWidth, mYOffset, mPaint);
@@ -107,8 +116,32 @@ public class GraphView extends View {
                     	x+=20;
                     }
                 }
+                if (thresholdVisible){
+                	final Paint paint = mPaint;
+                	paint.setColor(0xFF000000);
+                	cavas.drawLine(0, threshold, mWidth, threshold, paint);
+                }
                 canvas.drawBitmap(mBitmap, 0, 0, null);
             }
         } 
     }
+
+	@Override
+	public boolean onTouch(View view, MotionEvent event) {
+		switch (event.getAction()){
+		case MotionEvent.ACTION_DOWN:
+			thresholdVisible = true;
+			break;
+		case MotionEvent.ACTION_UP:
+			thresholdVisible = false;
+			break;
+		case MotionEvent.ACTION_MOVE:
+			threshold = (int) event.getY();
+			Log.d("GraphView", "threshold:" + threshold);
+			break;
+		}
+		invalidate();
+		
+		return true;
+	}
 }
