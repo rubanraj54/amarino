@@ -572,13 +572,27 @@ public class AmarinoService extends Service {
 		public abstract void write(byte[] bytes);
 		
 		protected void forwardData(byte[] data){
-			String flags = data.split(" ")[0];
-			String values = data.split(" ")[1];
+//			String flags = data.split(" ")[0];
+//			String values = data.split(" ")[1];
 			
-			//Data type flag should be first char of message
-			int dataType = flags.charAt(0);
+			
+			//flag(char) = 2 byte, datatype(short) = 2 byte, number of entries(int) = 4 Byte
+			byte[] flags = new byte[8];
+			for(int i = 0; i < 7; i++){
+				flags[i] = data[i];
+			}
+			
+			//data.length - 10 because of 8 flagbytes and the 2 byte flag delimiter character
+			byte[] values = new byte[data.length-10];
+			for(int i = 10; i < data.length; i++){
+				values[i] = data[i];
+			}
+			
+			
+			//Data type flag should be third and fourth byte of message
+			int dataType = (0 << 12) & (0 << 8) & (flags[3] << 4) & flags[2];
 			//the rest of the message should indicate the number of values
-			int numValues = Integer.parseInt(flags.substring(1, flags.length()));
+			int numValues = (flags[7] << 12) & (flags[6] << 8) & (flags[5] << 4) & flags[4];
 			
 			boolean isArray = false;
 			if(numValues > 1) isArray = true;
@@ -586,8 +600,8 @@ public class AmarinoService extends Service {
 			Logger.d(TAG, "Datatype: "+dataType+" - numValues: "+numValues);
 			
 			char c;
-			for (int i=0;i<values.length();i++){
-				c = values.charAt(i);
+			for (int i=0;i<values.length/2;i++){
+				c = (char)(values[i] << 4 & values[i++]);
 				if (c == MessageBuilder.ARDUINO_MSG_FLAG){
 					// TODO this could be used to determine the data type
 //					if (i+1<data.length()){
