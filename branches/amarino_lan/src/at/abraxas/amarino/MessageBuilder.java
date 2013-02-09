@@ -18,6 +18,10 @@
 */
 package at.abraxas.amarino;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import android.content.Intent;
 import at.abraxas.amarino.log.Logger;
 
@@ -35,15 +39,15 @@ public class MessageBuilder {
 	
 	public static final String TAG = "MessageBuilder";
 	
-	public static final int STRING_FLAG = 1;
-	public static final int DOUBLE_FLAG = 2;
-	public static final int BYTE_FLAG = 3;
-	public static final int INT_FLAG = 4;
-	public static final int SHORT_FLAG = 5;
-	public static final int FLOAT_FLAG = 6;
-	public static final int BOOLEAN_FLAG = 7;
-	public static final int CHAR_FLAG = 8;
-	public static final int LONG_FLAG = 9;
+	public static final short STRING_FLAG = 1;
+	public static final short DOUBLE_FLAG = 2;
+	public static final short BYTE_FLAG = 3;
+	public static final short INT_FLAG = 4;
+	public static final short SHORT_FLAG = 5;
+	public static final short FLOAT_FLAG = 6;
+	public static final short BOOLEAN_FLAG = 7;
+	public static final short CHAR_FLAG = 8;
+	public static final short LONG_FLAG = 9;
 	
 	public static final char ALIVE_FLAG = 17;
 	public static final char ARDUINO_MSG_FLAG = 18;
@@ -57,10 +61,12 @@ public class MessageBuilder {
 	// alive msg is happens very often, we optimize it to be a constant
 	// instead of constructing it always from ground
 	public static final String ALIVE_MSG = ALIVE_FLAG + "" + ACK_FLAG;
-	
-	
 
-	public static String getMessage(Intent intent){
+	public static byte[] getMessage(Intent intent) throws IOException{
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		DataOutputStream w = new DataOutputStream(baos);
+		
 		final int dataType = intent.getIntExtra(AmarinoIntent.EXTRA_DATA_TYPE, -1);
 		System.out.println("Datentyp: " + dataType);
 		if (dataType == -1) {
@@ -78,153 +84,304 @@ public class MessageBuilder {
 		case AmarinoIntent.STRING_EXTRA:
 			String s = intent.getStringExtra(AmarinoIntent.EXTRA_DATA);
 			//Logger.d(TAG, "plugin says: " + s);
-			if (s==null) return "0" + ACK_FLAG;
-			return flag + String.valueOf(STRING_FLAG) + "1" + FLAG_DELIMITER + s + ACK_FLAG;
+			if (s==null){
+				w.write(0); 
+				w.write(ACK_FLAG); 
+				w.flush(); 
+				return baos.toByteArray();
+			}
+
+			w.writeChar(flag);
+			w.writeShort(STRING_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeUTF(s);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 			
 		/* double is too large for Arduinos, better not to use this datatype */
 		case AmarinoIntent.DOUBLE_EXTRA:
 			double d = intent.getDoubleExtra(AmarinoIntent.EXTRA_DATA, -1);
 			//Logger.d(TAG, "plugin says: " + d);
-			return flag + String.valueOf(DOUBLE_FLAG) + "1" + FLAG_DELIMITER + (d + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(DOUBLE_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeFloat((float)d);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 			
 		/* byte is byte. In Arduino a byte stores an 8-bit unsigned number, from 0 to 255. */
 		case AmarinoIntent.BYTE_EXTRA:
 			byte by = intent.getByteExtra(AmarinoIntent.EXTRA_DATA, (byte)-1);
 			//Logger.d(TAG, "plugin says: " + by);
-			return flag + String.valueOf(BYTE_FLAG) + "1" + FLAG_DELIMITER + (by + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(BYTE_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeByte(by);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 			
 		/* int in Android is long in Arduino (4 bytes) */
 		case AmarinoIntent.INT_EXTRA:
 			int i = intent.getIntExtra(AmarinoIntent.EXTRA_DATA, -1);
 			//Logger.d(TAG, "plugin says: " + i);
-			return flag + String.valueOf(INT_FLAG) + "1" + FLAG_DELIMITER + (i + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(INT_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeInt(i);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 			
 		/* short in Android is like int in Arduino (2 bytes) 2^15 */
 		case AmarinoIntent.SHORT_EXTRA:
 			short sh = intent.getShortExtra(AmarinoIntent.EXTRA_DATA, (short)-1);
 			//Logger.d(TAG, "plugin says: " + sh);
-			return flag + String.valueOf(SHORT_FLAG) + "1" + FLAG_DELIMITER + (sh + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(SHORT_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeShort(sh);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 
 		/* float in Android is float in Arduino (4 bytes) */
 		case AmarinoIntent.FLOAT_EXTRA:
 			float f = intent.getFloatExtra(AmarinoIntent.EXTRA_DATA, -1f);
 			//Logger.d(TAG, "plugin says: " + f);
-			return flag + String.valueOf(FLOAT_FLAG) + "1" + FLAG_DELIMITER + (f + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(FLOAT_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeFloat(f);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 		
 		/* boolean in Android is in Arduino 0=false, 1=true */
 		case AmarinoIntent.BOOLEAN_EXTRA:
 			boolean b = intent.getBooleanExtra(AmarinoIntent.EXTRA_DATA, false);
 			//Logger.d(TAG, "plugin says: " + b);
-			return flag + String.valueOf(BOOLEAN_FLAG) + "1" + FLAG_DELIMITER + (((b) ? 1 : 0) + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(BOOLEAN_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeInt(((b) ? 1 : 0));
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 			
 		/* char is char. In Arduino stored in 1 byte of memory */
 		case AmarinoIntent.CHAR_EXTRA:
 			char c = intent.getCharExtra(AmarinoIntent.EXTRA_DATA, 'x');
 			//Logger.d(TAG, "plugin says: " + c);
-			return flag + String.valueOf(CHAR_FLAG) + "1" + FLAG_DELIMITER + (c + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(CHAR_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeChar(c);
+			w.write(ACK_FLAG);
+			w.flush();
+			
+			return baos.toByteArray();
 		
 		/* long in Android does not fit in Arduino data types, better not to use it */
 		case AmarinoIntent.LONG_EXTRA:
 			long l = intent.getLongExtra(AmarinoIntent.EXTRA_DATA, -1l);
 			//Logger.d(TAG, "plugin says: " + l);
-			return flag + String.valueOf(LONG_FLAG) + "1" + FLAG_DELIMITER + (l + String.valueOf(ACK_FLAG));
+			
+			w.writeChar(flag);
+			w.writeShort(LONG_FLAG);
+			w.write(1);
+			w.write(FLAG_DELIMITER);
+			w.writeLong(l);
+			w.write(ACK_FLAG);
+			w.flush();
+		
+			return baos.toByteArray();
 
 		case AmarinoIntent.INT_ARRAY_EXTRA:
 			int[] ints = intent.getIntArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(INT_FLAG);
+			w.write(ints.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (ints != null){
-				String msg = new String();
+//				String msg = new String();
 				for (int integer : ints){
-					msg += String.valueOf(integer) + DATA_DELIMITER;
+					w.writeInt(integer);
 				}
-				return flag + String.valueOf(INT_FLAG) + ints.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);	
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.CHAR_ARRAY_EXTRA:
 			char[] chars = intent.getCharArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(CHAR_FLAG);
+			w.write(chars.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (chars != null){
 				String msg = new String();
 				for (char character : chars){
-					msg += String.valueOf(character) + DATA_DELIMITER;
+					w.writeChar(character);
 				}
-				return flag + String.valueOf(CHAR_FLAG) + chars.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);	
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.BYTE_ARRAY_EXTRA:
 			byte[] bytes = intent.getByteArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(BYTE_FLAG);
+			w.write(bytes.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (bytes != null){
-				String msg = new String();
 				for (byte oneByte : bytes){
-					msg += String.valueOf(oneByte) + DATA_DELIMITER;
+					w.writeByte(oneByte);
 				}
-				return flag + String.valueOf(BYTE_FLAG) + bytes.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.SHORT_ARRAY_EXTRA:
 			short[] shorts = intent.getShortArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(SHORT_FLAG);
+			w.write(shorts.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (shorts != null){
-				String msg = new String();
 				for (short shorty : shorts){
-					msg += String.valueOf(shorty) + DATA_DELIMITER;
+					w.writeShort(shorty);
 				}
-				return flag + String.valueOf(SHORT_FLAG) + shorts.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.STRING_ARRAY_EXTRA:
 			String[] strings = intent.getStringArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(STRING_FLAG);
+			w.write(strings.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (strings != null){
-				String msg = new String();
 				for (String str : strings){
-					msg += String.valueOf(str) + DATA_DELIMITER;
+					w.writeUTF(str);
 				}
-				return flag + String.valueOf(STRING_FLAG) + strings.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.DOUBLE_ARRAY_EXTRA:
 			double[] doubles = intent.getDoubleArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(DOUBLE_FLAG);
+			w.write(doubles.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (doubles != null){
-				String msg = new String();
 				for (double singleDouble : doubles){ // :-)
-					msg += String.valueOf(singleDouble) + DATA_DELIMITER;
+					w.writeFloat((float)singleDouble);
 				}
-				return flag + String.valueOf(DOUBLE_FLAG) + doubles.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.FLOAT_ARRAY_EXTRA:
 			float[] floats = intent.getFloatArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(FLOAT_FLAG);
+			w.write(floats.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (floats != null){
-				String msg = new String();
 				for (float fl : floats){
-					msg += String.valueOf(fl) + DATA_DELIMITER;
+					w.writeFloat(fl);
 				}
-				return flag + String.valueOf(FLOAT_FLAG) + floats.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.BOOLEAN_ARRAY_EXTRA:
 			boolean[] booleans = intent.getBooleanArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(BOOLEAN_FLAG);
+			w.write(booleans.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (booleans != null){
-				String msg = new String();
 				for (boolean bool : booleans){
-					msg += String.valueOf((bool) ? 1 : 0) + DATA_DELIMITER;
+					w.writeInt((bool) ? 1 : 0);
 				}
-				return flag + String.valueOf(BOOLEAN_FLAG) + booleans.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 			
 		case AmarinoIntent.LONG_ARRAY_EXTRA:
 			long[] longs = intent.getLongArrayExtra(AmarinoIntent.EXTRA_DATA);
+			
+			w.writeChar(flag);
+			w.writeShort(LONG_FLAG);
+			w.write(longs.length);
+			w.write(FLAG_DELIMITER);
+			
 			if (longs != null){
-				String msg = new String();
 				for (long longo : longs){
-					msg += String.valueOf(longo) + DATA_DELIMITER;
+					w.writeLong(longo);
 				}
-				return flag + String.valueOf(LONG_FLAG) + longs.length + FLAG_DELIMITER  + finishingMessage(msg);
+				w.write(ACK_FLAG);
+				w.flush();
+				return baos.toByteArray();
 			}
 			break;
 
@@ -232,13 +389,13 @@ public class MessageBuilder {
 		return null;
 	}
 	
-	private static String finishingMessage(String msg){
-		int length = msg.length();
-		if (length > 0)
-			return msg.substring(0, length-1) + ACK_FLAG;
-		else
-			return msg + ACK_FLAG;
-	}
+//	private static String finishingMessage(String msg){
+//		int length = msg.length();
+//		if (length > 0)
+//			return msg.substring(0, length-1) + ACK_FLAG;
+//		else
+//			return msg + ACK_FLAG;
+//	}
 	
 	/**
 	 * Returns array values, in a line by line matter (each value one in a separate line)

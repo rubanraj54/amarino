@@ -212,19 +212,19 @@ public class AmarinoService extends Service {
 				return;
 			}
 
-			String message = MessageBuilder.getMessage(intent);
-			if (message == null) return; 
-			
-			// cutoff leading flag and ACK_FLAG for logger
-			Logger.d(TAG, getString(R.string.service_message_to_send, message.substring(1, message.length()-1)));
-			
+			byte[] message;
 			try {
-				sendData(address, message.getBytes("ISO-8859-1"), type);
-			} catch (UnsupportedEncodingException e) {
-				// use default encoding as fallback alternative if encoding ISO 8859-1 is not possible
-				Logger.d(TAG, "Encoding message using ISO-8859-1 not possible");
-				sendData(address, message.getBytes(), type);
+				message = MessageBuilder.getMessage(intent);
+				if (message == null) return; 
+				
+				// cutoff leading flag and ACK_FLAG for logger
+				Logger.d(TAG, getString(R.string.service_message_to_send, message));
+				
+				sendData(address, message, type);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+
 		}
 		else {
 			List<Device> devices = enabledEvents.get(pluginId);
@@ -235,12 +235,17 @@ public class AmarinoService extends Service {
 					intent.putExtra(AmarinoIntent.EXTRA_FLAG, device.events.get(pluginId).flag);
 					//Log.d(TAG, "flag" + device.events.get(pluginId).flag);
 					
-					String message = MessageBuilder.getMessage(intent);
-					if (message == null) return;
-					
-					Logger.d(TAG, getString(R.string.service_message_to_send, message.substring(1, message.length()-1)));
+					byte[] message;
+					try {
+						message = MessageBuilder.getMessage(intent);
+						if (message == null) return;
+						
+						Logger.d(TAG, getString(R.string.service_message_to_send, message));
 
-					sendData(device.getAddress(), message.getBytes(), device.getType());
+						sendData(device.getAddress(), message, device.getType());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			else {
@@ -552,7 +557,7 @@ public class AmarinoService extends Service {
 	                msg = new String(buffer, 0, (bytes != -1) ? bytes : 0 );
 	                //Log.d(TAG, msg); // raw data with control flags
 	                
-	                forwardData(msg);
+	                forwardData(buffer);
 
 	            } catch (IOException e) {
 	            	Logger.d(TAG, "communication to " + address + " halted");
@@ -566,7 +571,7 @@ public class AmarinoService extends Service {
 	    /* Call this from the main Activity to send data to the remote device */
 		public abstract void write(byte[] bytes);
 		
-		protected void forwardData(String data){
+		protected void forwardData(byte[] data){
 			String flags = data.split(" ")[0];
 			String values = data.split(" ")[1];
 			
@@ -674,6 +679,14 @@ public class AmarinoService extends Service {
 		public void setHeartbeatThread(HeartbeatThread heartbeat) {
 			this.heartbeat = heartbeat;
 			
+		}
+		
+		public void setInputStream(InputStream in){
+			this.inStream = in;
+		}
+		
+		public void setOutputStream(OutputStream out){
+			this.outStream = out;
 		}
 		
 		public HeartbeatThread getHeartbeatThread(){
@@ -787,18 +800,18 @@ public class AmarinoService extends Service {
 	    	super(address);
 	        mSocket = socket;
 	        
-	        InputStream tmpIn = null;
-	        OutputStream tmpOut = null;
+//	        InputStream tmpIn = null;
+//	        OutputStream tmpOut = null;
 	        
 	        // Get the input and output streams, using temp objects because
 	        // member streams are final
 	        try {
-	            tmpIn = socket.getInputStream();
-	            tmpOut = socket.getOutputStream();
+	        	inStream = socket.getInputStream();
+	        	outStream = socket.getOutputStream();
 	        } catch (Exception e) { }
         
-	        inStream = tmpIn;
-	        outStream = tmpOut;
+//	        inStream = tmpIn;
+//	        outStream = tmpOut;
 	    }
 
 	    /* Call this from the main Activity to shutdown the connection */
@@ -882,20 +895,20 @@ public class AmarinoService extends Service {
 			super(address);
 			mSocket = socket;
 			
-			Logger.d(TAG,"is socket bind"+mSocket.isBound());
+//			Logger.d(TAG,"is socket bind"+mSocket.isBound());
 			
-	        InputStream tmpIn = null;
-	        OutputStream tmpOut = null;
-	        
+//	        InputStream tmpIn = null;
+//	        OutputStream tmpOut = null;
+//	        
 	        // Get the input and output streams, using temp objects because
 	        // member streams are final
 	        try {
-	            tmpIn = mSocket.getInputStream();
-	            tmpOut = mSocket.getOutputStream();
+	        	setInputStream(mSocket.getInputStream());
+	        	setOutputStream(mSocket.getOutputStream());
 	        } catch (Exception e) { Log.e(TAG, "problem creating in/outPutStream: " + e);}
 
-	        outStream = tmpOut;
-	        inStream = tmpIn;
+//	        outStream = tmpOut;
+//	        inStream = tmpIn;
 		}
 
 	    /* Call this from the main Activity to send data to the remote device */
