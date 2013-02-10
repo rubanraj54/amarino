@@ -91,10 +91,10 @@ public class MessageBuilder {
 				return baos.toByteArray();
 			}
 
-			w.writeChar(flag);
+			w.writeByte(flag);
+			//w.writeChar(flag);
 			w.writeShort(STRING_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeUTF(s);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -106,10 +106,9 @@ public class MessageBuilder {
 			double d = intent.getDoubleExtra(AmarinoIntent.EXTRA_DATA, -1);
 			//Logger.d(TAG, "plugin says: " + d);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(DOUBLE_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeFloat((float)d);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -121,10 +120,9 @@ public class MessageBuilder {
 			byte by = intent.getByteExtra(AmarinoIntent.EXTRA_DATA, (byte)-1);
 			//Logger.d(TAG, "plugin says: " + by);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(BYTE_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeByte(by);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -136,10 +134,9 @@ public class MessageBuilder {
 			int i = intent.getIntExtra(AmarinoIntent.EXTRA_DATA, -1);
 			//Logger.d(TAG, "plugin says: " + i);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(INT_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeInt(i);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -151,10 +148,9 @@ public class MessageBuilder {
 			short sh = intent.getShortExtra(AmarinoIntent.EXTRA_DATA, (short)-1);
 			//Logger.d(TAG, "plugin says: " + sh);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(SHORT_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeShort(sh);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -166,10 +162,9 @@ public class MessageBuilder {
 			float f = intent.getFloatExtra(AmarinoIntent.EXTRA_DATA, -1f);
 			//Logger.d(TAG, "plugin says: " + f);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(FLOAT_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeFloat(f);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -181,10 +176,9 @@ public class MessageBuilder {
 			boolean b = intent.getBooleanExtra(AmarinoIntent.EXTRA_DATA, false);
 			//Logger.d(TAG, "plugin says: " + b);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(BOOLEAN_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeInt(((b) ? 1 : 0));
 			w.write(ACK_FLAG);
 			w.flush();
@@ -196,10 +190,9 @@ public class MessageBuilder {
 			char c = intent.getCharExtra(AmarinoIntent.EXTRA_DATA, 'x');
 			//Logger.d(TAG, "plugin says: " + c);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(CHAR_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeChar(c);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -211,10 +204,9 @@ public class MessageBuilder {
 			long l = intent.getLongExtra(AmarinoIntent.EXTRA_DATA, -1l);
 			//Logger.d(TAG, "plugin says: " + l);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(LONG_FLAG);
 			w.write(1);
-			w.write(FLAG_DELIMITER);
 			w.writeLong(l);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -224,10 +216,9 @@ public class MessageBuilder {
 		case AmarinoIntent.INT_ARRAY_EXTRA:
 			int[] ints = intent.getIntArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(INT_FLAG);
 			w.write(ints.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (ints != null){
 //				String msg = new String();
@@ -243,10 +234,9 @@ public class MessageBuilder {
 		case AmarinoIntent.CHAR_ARRAY_EXTRA:
 			char[] chars = intent.getCharArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(CHAR_FLAG);
 			w.write(chars.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (chars != null){
 				String msg = new String();
@@ -262,10 +252,9 @@ public class MessageBuilder {
 		case AmarinoIntent.BYTE_ARRAY_EXTRA:
 			byte[] bytes = intent.getByteArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(BYTE_FLAG);
 			w.write(bytes.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (bytes != null){
 				for (byte oneByte : bytes){
@@ -280,10 +269,9 @@ public class MessageBuilder {
 		case AmarinoIntent.SHORT_ARRAY_EXTRA:
 			short[] shorts = intent.getShortArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(SHORT_FLAG);
 			w.write(shorts.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (shorts != null){
 				for (short shorty : shorts){
@@ -298,10 +286,9 @@ public class MessageBuilder {
 		case AmarinoIntent.STRING_ARRAY_EXTRA:
 			String[] strings = intent.getStringArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(STRING_FLAG);
 			w.write(strings.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (strings != null){
 				for (String str : strings){
@@ -316,10 +303,9 @@ public class MessageBuilder {
 		case AmarinoIntent.DOUBLE_ARRAY_EXTRA:
 			double[] doubles = intent.getDoubleArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(DOUBLE_FLAG);
 			w.write(doubles.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (doubles != null){
 				for (double singleDouble : doubles){ // :-)
@@ -334,10 +320,9 @@ public class MessageBuilder {
 		case AmarinoIntent.FLOAT_ARRAY_EXTRA:
 			float[] floats = intent.getFloatArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(FLOAT_FLAG);
 			w.write(floats.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (floats != null){
 				for (float fl : floats){
@@ -352,10 +337,9 @@ public class MessageBuilder {
 		case AmarinoIntent.BOOLEAN_ARRAY_EXTRA:
 			boolean[] booleans = intent.getBooleanArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(BOOLEAN_FLAG);
 			w.write(booleans.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (booleans != null){
 				for (boolean bool : booleans){
@@ -370,10 +354,9 @@ public class MessageBuilder {
 		case AmarinoIntent.LONG_ARRAY_EXTRA:
 			long[] longs = intent.getLongArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
-			w.writeChar(flag);
+			w.writeByte(flag);
 			w.writeShort(LONG_FLAG);
 			w.write(longs.length);
-			w.write(FLAG_DELIMITER);
 			
 			if (longs != null){
 				for (long longo : longs){

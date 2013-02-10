@@ -572,27 +572,30 @@ public class AmarinoService extends Service {
 		public abstract void write(byte[] bytes);
 		
 		protected void forwardData(byte[] data){
+			//for(int i = 0; i < data.length; i++){
+			//	System.out.print(data[i]+"|");
+			//}
 //			String flags = data.split(" ")[0];
 //			String values = data.split(" ")[1];
 			
 			
-			//flag(char) = 2 byte, datatype(short) = 2 byte, number of entries(int) = 4 Byte
-			byte[] flags = new byte[8];
-			for(int i = 0; i < 7; i++){
+			// datatype(short) = 2 byte, number of entries(int) = 4 Byte
+			byte[] flags = new byte[6];
+			for(int i = 0; i < 6; i++){
 				flags[i] = data[i];
 			}
 			
-			//data.length - 10 because of 8 flagbytes and the 2 byte flag delimiter character
-			byte[] values = new byte[data.length-10];
-			for(int i = 10; i < data.length; i++){
+			
+			//data.length - 6 because of 6 flagbytes
+			byte[] values = new byte[data.length];
+			for(int i = 6; i < data.length; i++){
 				values[i] = data[i];
 			}
 			
-			
 			//Data type flag should be third and fourth byte of message
-			int dataType = (0 << 12) & (0 << 8) & (flags[3] << 4) & flags[2];
+			int dataType = (0x0 << 12) | (0x0 << 8) | (flags[0] << 4) | flags[1];
 			//the rest of the message should indicate the number of values
-			int numValues = (flags[7] << 12) & (flags[6] << 8) & (flags[5] << 4) & flags[4];
+			int numValues = (flags[2] << 12) | (flags[3] << 8) | (flags[4] << 4) | flags[5];
 			
 			boolean isArray = false;
 			if(numValues > 1) isArray = true;
@@ -600,8 +603,8 @@ public class AmarinoService extends Service {
 			Logger.d(TAG, "Datatype: "+dataType+" - numValues: "+numValues);
 			
 			char c;
-			for (int i=0;i<values.length/2;i++){
-				c = (char)(values[i] << 4 & values[i++]);
+			for (int i=0;i<values.length;i++){
+				c = (char)(values[i]);
 				if (c == MessageBuilder.ARDUINO_MSG_FLAG){
 					// TODO this could be used to determine the data type
 //					if (i+1<data.length()){
@@ -613,7 +616,7 @@ public class AmarinoService extends Service {
 //						// wait for the next char to be sent
 //					}
 				}
-				else if (c == MessageBuilder.ACK_FLAG || c == '#'){
+				else if (c == MessageBuilder.ACK_FLAG){
 					// message complete send the data
 					forwardDataToOtherApps(forwardBuffer.toString(), dataType, isArray);
 	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
