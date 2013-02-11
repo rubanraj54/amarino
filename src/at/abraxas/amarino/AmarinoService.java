@@ -35,7 +35,6 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -533,7 +532,6 @@ public class AmarinoService extends Service {
 	
 	private abstract class ConnectedThread extends Thread{
 	    private StringBuffer forwardBuffer = new StringBuffer();
-	    private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
@@ -591,8 +589,8 @@ public class AmarinoService extends Service {
 			
 			//data.length-6 because of 6 flag bytes
 			byte[] values = new byte[data.length-6];
-			for(int i = 6; i < data.length; i++){
-				values[i] = data[i];
+			for(int i = 0; i < values.length; i++){
+				values[i] = data[i+6];
 			}
 			 
 			//Data type flag should be third and fourth byte of message
@@ -606,11 +604,13 @@ public class AmarinoService extends Service {
 			Logger.d(TAG, "Datatype: "+dataType+" - numValues: "+numValues);
 			
 			char c;
-			for (int i=0; i<values.length/2; i++){ 
+			//for (int i=0; i<values.length/2; i++){
+			for (int i=0; i<values.length; i++){
 				//we only have to iterate over half the values because we increment inside the loop again
 				//decode bytes to char to check for flags (char = 2 bytes)
-				c = (char) ((values[i] << 8) | values[i++]); 
 				
+				//c = (char) ((values[i] << 8) | values[i++]); 
+				c = (char) values[i];
 				if (c == MessageBuilder.ARDUINO_MSG_FLAG){
 					// TODO this could be used to determine the data type
 //					if (i+1<data.length()){
@@ -625,7 +625,7 @@ public class AmarinoService extends Service {
 				else if (c == MessageBuilder.ACK_FLAG){
 					// message complete send the data
 					forwardDataToOtherApps(forwardBuffer.toString(), dataType, isArray);
-	            	Logger.d(TAG, "received from "+address+": "+byteBuffer.toString());
+	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
 					forwardBuffer = new StringBuffer();
 //					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_ON_FLAG){
@@ -640,8 +640,6 @@ public class AmarinoService extends Service {
 					sendBroadcast(intent);
 				}
 				else {
-//					byteBuffer.put(values[i]);
-//					byteBuffer.put(values[i++]);
 					forwardBuffer.append(c);
 				}
 			}
@@ -980,7 +978,7 @@ public class AmarinoService extends Service {
 		public void run(){
 			int timeouts = 0;
 			while(!stop){
-				String message = MessageBuilder.ALIVE_MSG;
+				String message = ""+MessageBuilder.ALIVE_FLAG;
 		        Logger.d(TAG, "Heartbeat Started");
 				try {
 					outStream.write(message.getBytes("ISO-8859-1"));
@@ -1001,7 +999,7 @@ public class AmarinoService extends Service {
 					
 				
 				try {
-					Thread.sleep(500);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
