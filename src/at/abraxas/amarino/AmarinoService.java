@@ -589,14 +589,12 @@ public class AmarinoService extends Service {
 				flags[i] = data[i];
 			}
 			
-			
-			//data.length - 6 because of 6 flagbytes
-			byte[] values = new byte[data.length];
+			//data.length-6 because of 6 flag bytes
+			byte[] values = new byte[data.length-6];
 			for(int i = 6; i < data.length; i++){
 				values[i] = data[i];
 			}
-			
-			//TODO: 
+			 
 			//Data type flag should be third and fourth byte of message
 			int dataType = (0x0 << 24) | (0x0 << 16) | (flags[0] << 8) | flags[1];
 			//the rest of the message should indicate the number of values
@@ -608,8 +606,9 @@ public class AmarinoService extends Service {
 			Logger.d(TAG, "Datatype: "+dataType+" - numValues: "+numValues);
 			
 			char c;
-			for (int i=0; i<values.length/2; i++){
-				//decode bytes to char to check for flags
+			for (int i=0; i<values.length/2; i++){ 
+				//we only have to iterate over half the values because we increment inside the loop again
+				//decode bytes to char to check for flags (char = 2 bytes)
 				c = (char) ((values[i] << 8) | values[i++]); 
 				
 				if (c == MessageBuilder.ARDUINO_MSG_FLAG){
