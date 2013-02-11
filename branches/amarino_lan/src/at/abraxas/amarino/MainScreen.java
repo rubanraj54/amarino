@@ -184,6 +184,7 @@ public class MainScreen extends ListActivity implements OnClickListener{
 	    //intentFilter.addAction(AmarinoIntent.ACTION_DISCONNECTED);
 	    intentFilter.addAction(AmarinoIntent.ACTION_CONNECTION_FAILED);
 	    intentFilter.addAction(AmarinoIntent.ACTION_PAIRING_REQUESTED);
+	    intentFilter.addAction(AmarinoIntent.ACTION_HB_TIMEOUT);
 	    registerReceiver(receiver, intentFilter);
 	    
 	    // request state of devices
