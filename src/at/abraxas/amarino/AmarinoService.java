@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -111,6 +112,8 @@ public class AmarinoService extends Service {
         }
 		
 		IntentFilter filter = new IntentFilter(AmarinoIntent.ACTION_SEND);
+		filter.addAction(AmarinoIntent.ACTION_HB_ON);
+		filter.addAction(AmarinoIntent.ACTION_HB_OFF);
 		registerReceiver(receiver, filter);
 	}
 
@@ -530,6 +533,7 @@ public class AmarinoService extends Service {
 	
 	private abstract class ConnectedThread extends Thread{
 	    private StringBuffer forwardBuffer = new StringBuffer();
+	    private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
@@ -592,10 +596,11 @@ public class AmarinoService extends Service {
 				values[i] = data[i];
 			}
 			
+			//TODO: 
 			//Data type flag should be third and fourth byte of message
-			int dataType = (0x0 << 12) | (0x0 << 8) | (flags[0] << 4) | flags[1];
+			int dataType = (0x0 << 24) | (0x0 << 16) | (flags[0] << 8) | flags[1];
 			//the rest of the message should indicate the number of values
-			int numValues = (flags[2] << 12) | (flags[3] << 8) | (flags[4] << 4) | flags[5];
+			int numValues = (flags[2] << 24) | (flags[3] << 16) | (flags[4] << 8) | flags[5];
 			
 			boolean isArray = false;
 			if(numValues > 1) isArray = true;
@@ -603,8 +608,10 @@ public class AmarinoService extends Service {
 			Logger.d(TAG, "Datatype: "+dataType+" - numValues: "+numValues);
 			
 			char c;
-			for (int i=0;i<values.length;i++){
-				c = (char)(values[i]);
+			for (int i=0; i<values.length/2; i++){
+				//decode bytes to char to check for flags
+				c = (char) ((values[i] << 8) | values[i++]); 
+				
 				if (c == MessageBuilder.ARDUINO_MSG_FLAG){
 					// TODO this could be used to determine the data type
 //					if (i+1<data.length()){
@@ -619,8 +626,9 @@ public class AmarinoService extends Service {
 				else if (c == MessageBuilder.ACK_FLAG){
 					// message complete send the data
 					forwardDataToOtherApps(forwardBuffer.toString(), dataType, isArray);
-	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
+	            	Logger.d(TAG, "received from "+address+": "+byteBuffer.toString());
 					forwardBuffer = new StringBuffer();
+//					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_ON_FLAG){
 					Intent intent = new Intent(AmarinoIntent.ACTION_HB_ON);
 					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
@@ -633,6 +641,8 @@ public class AmarinoService extends Service {
 					sendBroadcast(intent);
 				}
 				else {
+//					byteBuffer.put(values[i]);
+//					byteBuffer.put(values[i++]);
 					forwardBuffer.append(c);
 				}
 			}
@@ -640,12 +650,18 @@ public class AmarinoService extends Service {
 		
 		protected void forwardDataToOtherApps(String msg, int dataType, boolean isArray){
 	    	Logger.d(TAG, "Arduino says: " + msg);
+//	    	Intent intent = createReceivedIntent(data, dataType, isArray);
 	    	Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
-            intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
-            addDataType(intent, dataType, isArray);
-            intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
+	    	intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
+          	addDataType(intent, dataType, isArray);
+          	intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
             sendBroadcast(intent);
 		}
+		
+//		protected Intent createReceivedIntent(ByteBuffer data, int dataType, boolean isArray){
+//			Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
+//			
+//		}
 		
 		protected void addDataType(Intent intent, int dataType, boolean isArray){
 			switch(dataType){
