@@ -960,6 +960,11 @@ public class AmarinoService extends Service {
 		}
 	}
 	
+	/**
+	 * HeartbeatThread provides heartbeat functionality, sends a message every 2 seconds
+	 * @author vavti
+	 *
+	 */
 	private class HeartbeatThread extends Thread{
 		private OutputStream outStream;
 		private ConnectedThread ct;
@@ -991,7 +996,7 @@ public class AmarinoService extends Service {
 
 					if(timeouts >= TIMEOUT_THRESHHOLD){
 						Logger.d(TAG, "Heartbeat Thresshold reached for "+ ct.getAddress() +", connection lost");
-						this.stopp();
+						this.stopHeartbeatAndDisconnectSocket();
 					}
 				} catch (Exception e) {
 					Logger.d(TAG, "General Exception");
@@ -1007,7 +1012,23 @@ public class AmarinoService extends Service {
 			}
 		}
 		
-		public void stopp(){
+		/**
+		 * Stops the heartbeat without disconnecting the Socket, also sends an Intent
+		 */
+		public void stopHeartbeat(){
+			Intent intent = new Intent(AmarinoIntent.ACTION_HB_TIMEOUT);
+			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, ct.address);
+	        sendBroadcast(intent);
+	        
+			Logger.d(TAG, "Heartbeat Stopped");
+			
+	        this.stop = true;
+		}
+		
+		/**
+		 * Stops the heartbeat and disconnects the Socket, also sends an Intent
+		 */
+		public void stopHeartbeatAndDisconnectSocket(){
 			Intent intent = new Intent(AmarinoIntent.ACTION_HB_TIMEOUT);
 			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, ct.address);
 	        sendBroadcast(intent);
@@ -1049,7 +1070,7 @@ public class AmarinoService extends Service {
 				ConnectedThread ct = connections.get(address);
 				
 				HeartbeatThread heartbeat = ct.getHeartbeatThread();
-				heartbeat.stopp();
+				heartbeat.stopHeartbeat();
 			}
 		}
 	};
