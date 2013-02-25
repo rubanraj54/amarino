@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -532,6 +533,7 @@ public class AmarinoService extends Service {
 	
 	private abstract class ConnectedThread extends Thread{
 	    private StringBuffer forwardBuffer = new StringBuffer();
+	    private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
@@ -624,10 +626,12 @@ public class AmarinoService extends Service {
 				}
 				else if (c == MessageBuilder.ACK_FLAG){
 					// message complete send the data
-					forwardDataToOtherApps(forwardBuffer.toString(), dataType, isArray);
-	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
-					forwardBuffer = new StringBuffer();
-//					byteBuffer.clear();
+//					forwardDataToOtherApps(forwardBuffer.toString(), dataType, isArray);
+//	            	Logger.d(TAG, "received from "+address+": "+forwardBuffer.toString());
+//					forwardBuffer = new StringBuffer();
+					forwardDataToOtherApps(byteBuffer, dataType, numValues);
+					
+					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_ON_FLAG){
 					Intent intent = new Intent(AmarinoIntent.ACTION_HB_ON);
 					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
@@ -640,26 +644,175 @@ public class AmarinoService extends Service {
 					sendBroadcast(intent);
 				}
 				else {
+					byteBuffer.put(values[i]);
 					forwardBuffer.append(c);
 				}
 			}
 		}
 		
-		protected void forwardDataToOtherApps(String msg, int dataType, boolean isArray){
-	    	Logger.d(TAG, "Arduino says: " + msg);
+		/**
+		 * @deprecated
+		 * @param msg
+		 * @param dataType
+		 * @param numValues
+		 */
+		protected void forwardDataToOtherApps(String msg, int dataType, int numValues){
+//	    	Logger.d(TAG, "Arduino says: " + msg);
 //	    	Intent intent = createReceivedIntent(data, dataType, isArray);
-	    	Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
-	    	intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
-          	addDataType(intent, dataType, isArray);
-          	intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
-            sendBroadcast(intent);
+//	    	Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
+//	    	intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
+//          	addDataType(intent, dataType, numValues);
+          	
+//            sendBroadcast(intent);
 		}
 		
-//		protected Intent createReceivedIntent(ByteBuffer data, int dataType, boolean isArray){
-//			Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
-//			
-//		}
+		protected void forwardDataToOtherApps(ByteBuffer buffer, int dataType, int numValues){
+			Intent intent = createReceivedIntent(buffer, dataType, numValues);
+			sendBroadcast(intent);
+		}
 		
+		protected Intent createReceivedIntent(ByteBuffer data, int dataType, int numValues){
+			Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
+			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
+			
+			switch(dataType){
+			case MessageBuilder.BOOLEAN_FLAG :
+				if(numValues == 1){
+					boolean val = (data.get() == 1) ? true : false;
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BOOLEAN_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					boolean vals[] = new boolean[numValues];
+					for(int i = 0; i < numValues; i++){
+						vals[i] = (data.get() == 1) ? true : false;
+					}
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BOOLEAN_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+			
+			case MessageBuilder.BYTE_FLAG :
+				if(numValues == 1){
+					byte val = data.get();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					byte vals[] = new byte[numValues];
+					for(int i = 0; i < numValues; i++){
+						vals[i] = data.get();
+					}
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+			
+			case MessageBuilder.CHAR_FLAG :
+				if(numValues == 1){
+					char val = (char) data.get();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.CHAR_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					char vals[] = new char[numValues];
+					for(int i = 0; i < numValues; i++){
+						vals[i] = (char) data.get();
+					}
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.CHAR_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+					
+			/**
+			 * double is too large for Arduinos, better not to use this datatype
+			 */
+			case MessageBuilder.DOUBLE_FLAG :
+				
+				break;
+			
+			case MessageBuilder.FLOAT_FLAG :
+				if(numValues == 1){
+					float val = data.getFloat();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.FLOAT_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					float vals[] = data.asFloatBuffer().array();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.FLOAT_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+			
+			/**
+			 * int in Android is long in Arduino
+			 */
+			case MessageBuilder.INT_FLAG : 		
+				if(numValues == 1){
+					int val = (int) data.getLong();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					long temp[] = data.asLongBuffer().array();
+					int vals[] = new int[temp.length];
+					for(int i = 0; i < temp.length; i++)
+						vals[i] = (int) temp[i];
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+				
+			/**
+			 * long in Android does not fit in Arduino data types, better not to use it
+			 */
+			case MessageBuilder.LONG_FLAG : 
+				
+				break;
+				
+			case MessageBuilder.SHORT_FLAG :
+				if(numValues == 1){
+					short val = data.getShort();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.SHORT_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					short vals[] = data.asShortBuffer().array();
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.SHORT_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+				
+			case MessageBuilder.STRING_FLAG :
+				if(numValues == 1){
+					StringBuffer val = new StringBuffer();
+					while(data.hasRemaining())
+						val.append(data.getChar());
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val.toString());
+				}else{
+					StringBuffer temp = new StringBuffer();
+					String[] vals = new String[numValues];
+					char c;
+					int i = 0;
+					while(data.hasRemaining()){
+						c = data.getChar();
+						temp.append(c);
+						if(c == ';'){
+							vals[i] = temp.toString();
+							temp = new StringBuffer();
+							i++;
+						}
+					}
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
+				break;
+			}
+			
+			return intent;
+		}
+		
+		/**
+		 * @deprecated
+		 * @param intent
+		 * @param dataType
+		 * @param isArray
+		 */
 		protected void addDataType(Intent intent, int dataType, boolean isArray){
 			switch(dataType){
 			case MessageBuilder.BOOLEAN_FLAG : 
@@ -984,7 +1137,7 @@ public class AmarinoService extends Service {
 			int timeouts = 0;
 			while(!stop){
 				String message = ""+MessageBuilder.ALIVE_FLAG;
-		        Logger.d(TAG, "Heartbeat Started");
+		        Logger.d(TAG, "Heartbeat Sent");
 				try {
 					outStream.write(message.getBytes("ISO-8859-1"));
 				} catch (UnsupportedEncodingException e) {
