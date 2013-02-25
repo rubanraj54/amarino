@@ -661,9 +661,9 @@ public class AmarinoService extends Service {
 //	    	Intent intent = createReceivedIntent(data, dataType, isArray);
 //	    	Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
 //	    	intent.putExtra(AmarinoIntent.EXTRA_DATA, msg);
-//          	addDataType(intent, dataType, numValues);
+//          addDataType(intent, dataType, numValues);
           	
-//            sendBroadcast(intent);
+//          sendBroadcast(intent);
 		}
 		
 		protected void forwardDataToOtherApps(ByteBuffer buffer, int dataType, int numValues){
@@ -725,7 +725,7 @@ public class AmarinoService extends Service {
 			 * double is too large for Arduinos, better not to use this datatype
 			 */
 			case MessageBuilder.DOUBLE_FLAG :
-				
+				Logger.d(TAG, "double is too large for Arduinos, better not to use this datatype");
 				break;
 			
 			case MessageBuilder.FLOAT_FLAG :
@@ -762,7 +762,7 @@ public class AmarinoService extends Service {
 			 * long in Android does not fit in Arduino data types, better not to use it
 			 */
 			case MessageBuilder.LONG_FLAG : 
-				
+				Logger.d(TAG, "long in Android does not fit in Arduino data types, better not to use it");
 				break;
 				
 			case MessageBuilder.SHORT_FLAG :
@@ -791,11 +791,12 @@ public class AmarinoService extends Service {
 					int i = 0;
 					while(data.hasRemaining()){
 						c = data.getChar();
-						temp.append(c);
 						if(c == ';'){
 							vals[i] = temp.toString();
 							temp = new StringBuffer();
 							i++;
+						}else{
+							temp.append(c);
 						}
 					}
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_ARRAY_EXTRA);
