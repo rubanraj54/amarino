@@ -346,6 +346,11 @@ public interface AmarinoIntent {
 	public static final String ACTION_HB_OFF = "amarino.intent.action.HB_OFF";
 	
 	/**
+	 * describes the time between heartbeats
+	 */
+	public static final String EXTRA_HB_TIME = "amarino.intent.extra.HB_TIME";
+	
+	/**
 	 * signals that the heartbeat is timed out
 	 */
 	public static final String ACTION_HB_TIMEOUT = "amarino.intent.action.HB_TIMEOUT";

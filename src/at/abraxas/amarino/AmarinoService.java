@@ -633,10 +633,17 @@ public class AmarinoService extends Service {
 					
 					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_ON_FLAG){
+					//get the time between heartbeats from the bytebuffer
+					int time = byteBuffer.asIntBuffer().get();
+					
 					Intent intent = new Intent(AmarinoIntent.ACTION_HB_ON);
 					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
-					Logger.d(TAG, "Received HB_ON");
+					intent.putExtra(AmarinoIntent.EXTRA_HB_TIME, time);
+					Logger.d(TAG, "Received HB_ON ("+time+")");
 					sendBroadcast(intent);
+					
+					//clear the bytebuffer again
+					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_OFF_FLAG){
 					Intent intent = new Intent(AmarinoIntent.ACTION_HB_OFF);
 					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
@@ -1122,16 +1129,18 @@ public class AmarinoService extends Service {
 	private class HeartbeatThread extends Thread{
 		private OutputStream outStream;
 		private ConnectedThread ct;
+		private int time;
 		
 		private static final int TIMEOUT_THRESHHOLD = 2;
 		
 		private boolean stop = false;
 		
-		public HeartbeatThread(ConnectedThread ct){
+		public HeartbeatThread(ConnectedThread ct, int time){
 			this.outStream = ct.outStream;
 			this.ct = ct;
+			this.time = time;
 			
-			Logger.d(TAG, "Heartbeat startet for "+ ct.getAddress());
+			Logger.d(TAG, "Heartbeat startet for "+ ct.getAddress() +" will send Heartbeat every "+time+"ms");
 		}
 		
 		public void run(){
@@ -1158,7 +1167,7 @@ public class AmarinoService extends Service {
 					
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(time);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1211,9 +1220,10 @@ public class AmarinoService extends Service {
 			
 			if (AmarinoIntent.ACTION_HB_ON.equals(action)){
 				String address = intent.getStringExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS);
+				int time = intent.getIntExtra(AmarinoIntent.EXTRA_HB_TIME, -1);
 				ConnectedThread ct = connections.get(address);
 
-		        HeartbeatThread heartbeat = new HeartbeatThread(ct);
+		        HeartbeatThread heartbeat = new HeartbeatThread(ct, time);
 		        ct.setHeartbeatThread(heartbeat);
 		        
 		        heartbeat.start();
