@@ -44,10 +44,10 @@ public class AmarinoByteBuffer {
 		pointer = 0;
 	}
 	
-	public int getInt() {
+	public int getInt(int pos) {
 		String s = "";
 		for(int i = 0; i < 4; i++)
-			s+=buffer[i];
+			s+=buffer[4*pos+i];
 	    
 	    return new Integer(s);
 	}
@@ -67,7 +67,7 @@ public class AmarinoByteBuffer {
 		return ints;
 	}
 	
-	public long getLong(){
+	public long getLong(int pos){
 		
 	}
 	
@@ -75,8 +75,8 @@ public class AmarinoByteBuffer {
 		
 	}
 	
-	public boolean getBoolean(){
-		if(buffer[0] == 1) return true;
+	public boolean getBoolean(int pos){
+		if(buffer[pos] == 1) return true;
 		else return false;
 	}
 	
@@ -94,8 +94,8 @@ public class AmarinoByteBuffer {
 		return bools;
 	}
 	
-	public byte getByte(){
-		return buffer[0];
+	public byte getByte(int pos){
+		return buffer[pos];
 	}
 	
 	public byte[] getByteArray(int numValues){
@@ -109,7 +109,7 @@ public class AmarinoByteBuffer {
 		return bytes;
 	}
 	
-	public char getChar(){
+	public char getChar(int pos){
 		
 	}
 	
@@ -117,7 +117,7 @@ public class AmarinoByteBuffer {
 		
 	}
 	
-	public float getFloat(){
+	public float getFloat(int pos){
 		
 	}
 
@@ -125,7 +125,7 @@ public class AmarinoByteBuffer {
 		
 	}
 	
-	public short getShort(){
+	public short getShort(int pos){
 		
 	}
 	
@@ -133,7 +133,7 @@ public class AmarinoByteBuffer {
 		
 	}
 	
-	public String getString(){
+	public String getString(int pos){
 		//TODO: for Strings we need to transmit an EOS (End of String) indicator to know when the String ends
 		//		for Example ";"
 	}
