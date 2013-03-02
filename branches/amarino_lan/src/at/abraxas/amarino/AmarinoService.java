@@ -533,7 +533,7 @@ public class AmarinoService extends Service {
 	
 	private abstract class ConnectedThread extends Thread{
 	    private StringBuffer forwardBuffer = new StringBuffer();
-	    private ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+	    private AmarinoByteBuffer byteBuffer = new AmarinoByteBuffer(1024);
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
@@ -634,7 +634,7 @@ public class AmarinoService extends Service {
 					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_ON_FLAG){
 					//get the time between heartbeats from the bytebuffer
-					int time = byteBuffer.asIntBuffer().get();
+					int time = byteBuffer.getInt(0);
 					
 					Intent intent = new Intent(AmarinoIntent.ACTION_HB_ON);
 					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
@@ -673,26 +673,25 @@ public class AmarinoService extends Service {
 //          sendBroadcast(intent);
 		}
 		
-		protected void forwardDataToOtherApps(ByteBuffer buffer, int dataType, int numValues){
+		protected void forwardDataToOtherApps(AmarinoByteBuffer buffer, int dataType, int numValues){
 			Intent intent = createReceivedIntent(buffer, dataType, numValues);
 			sendBroadcast(intent);
 		}
 		
-		protected Intent createReceivedIntent(ByteBuffer data, int dataType, int numValues){
+		protected Intent createReceivedIntent(AmarinoByteBuffer data, int dataType, int numValues){
 			Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
 			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
 			
 			switch(dataType){
 			case MessageBuilder.BOOLEAN_FLAG :
 				if(numValues == 1){
-					boolean val = (data.get() == 1) ? true : false;
+					boolean val = (data.getBoolean(0));
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BOOLEAN_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
 					boolean vals[] = new boolean[numValues];
-					for(int i = 0; i < numValues; i++){
-						vals[i] = (data.get() == 1) ? true : false;
-					}
+					vals = (data.getBooleanArray(numValues));
+					
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BOOLEAN_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
@@ -700,14 +699,13 @@ public class AmarinoService extends Service {
 			
 			case MessageBuilder.BYTE_FLAG :
 				if(numValues == 1){
-					byte val = data.get();
+					byte val = data.getByte(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
 					byte vals[] = new byte[numValues];
-					for(int i = 0; i < numValues; i++){
-						vals[i] = data.get();
-					}
+					vals = data.getByteArray(numValues);
+					
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
@@ -715,14 +713,13 @@ public class AmarinoService extends Service {
 			
 			case MessageBuilder.CHAR_FLAG :
 				if(numValues == 1){
-					char val = (char) data.get();
+					char val = (char) data.getChar(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.CHAR_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
 					char vals[] = new char[numValues];
-					for(int i = 0; i < numValues; i++){
-						vals[i] = (char) data.get();
-					}
+					vals = data.getCharArray(numValues);
+					
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.CHAR_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
@@ -737,11 +734,11 @@ public class AmarinoService extends Service {
 			
 			case MessageBuilder.FLOAT_FLAG :
 				if(numValues == 1){
-					float val = data.getFloat();
+					float val = data.getFloat(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.FLOAT_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
-					float vals[] = data.asFloatBuffer().array();
+					float vals[] = data.getFloatArray(numValues);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.FLOAT_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
@@ -752,14 +749,16 @@ public class AmarinoService extends Service {
 			 */
 			case MessageBuilder.INT_FLAG : 		
 				if(numValues == 1){
-					int val = (int) data.getLong();
+					int val = data.getInt(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
-					long temp[] = data.asLongBuffer().array();
-					int vals[] = new int[temp.length];
+					//long temp[] = data.asLongBuffer().array();
+					int vals[] = data.getIntArray(numValues);
+					/*
 					for(int i = 0; i < temp.length; i++)
 						vals[i] = (int) temp[i];
+					*/
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
@@ -774,11 +773,11 @@ public class AmarinoService extends Service {
 				
 			case MessageBuilder.SHORT_FLAG :
 				if(numValues == 1){
-					short val = data.getShort();
+					short val = data.getShort(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.SHORT_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
-					short vals[] = data.asShortBuffer().array();
+					short vals[] = data.getShortArray(numValues);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.SHORT_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
@@ -786,14 +785,18 @@ public class AmarinoService extends Service {
 				
 			case MessageBuilder.STRING_FLAG :
 				if(numValues == 1){
+					/*
 					StringBuffer val = new StringBuffer();
 					while(data.hasRemaining())
 						val.append(data.getChar());
+					*/
+					String val = data.getString(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_EXTRA);
-					intent.putExtra(AmarinoIntent.EXTRA_DATA, val.toString());
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
 					StringBuffer temp = new StringBuffer();
-					String[] vals = new String[numValues];
+					String[] vals = data.getStringArray(numValues);
+					/*
 					char c;
 					int i = 0;
 					while(data.hasRemaining()){
@@ -806,6 +809,7 @@ public class AmarinoService extends Service {
 							temp.append(c);
 						}
 					}
+					*/
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.STRING_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
 				}
