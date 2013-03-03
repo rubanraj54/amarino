@@ -533,7 +533,7 @@ public class AmarinoService extends Service {
 	
 	private abstract class ConnectedThread extends Thread{
 	    private StringBuffer forwardBuffer = new StringBuffer();
-	    private AmarinoByteBuffer byteBuffer = new AmarinoByteBuffer(1024);
+	    private AmarinoCharBuffer byteBuffer = new AmarinoCharBuffer(1024);
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
@@ -673,12 +673,12 @@ public class AmarinoService extends Service {
 //          sendBroadcast(intent);
 		}
 		
-		protected void forwardDataToOtherApps(AmarinoByteBuffer buffer, int dataType, int numValues){
+		protected void forwardDataToOtherApps(AmarinoCharBuffer buffer, int dataType, int numValues){
 			Intent intent = createReceivedIntent(buffer, dataType, numValues);
 			sendBroadcast(intent);
 		}
 		
-		protected Intent createReceivedIntent(AmarinoByteBuffer data, int dataType, int numValues){
+		protected Intent createReceivedIntent(AmarinoCharBuffer data, int dataType, int numValues){
 			Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
 			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
 			
@@ -699,12 +699,12 @@ public class AmarinoService extends Service {
 			
 			case MessageBuilder.BYTE_FLAG :
 				if(numValues == 1){
-					byte val = data.getByte(0);
+					char val = data.getChar(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
 				}else{
-					byte vals[] = new byte[numValues];
-					vals = data.getByteArray(numValues);
+					char vals[] = new char[numValues];
+					vals = data.getCharArray(numValues);
 					
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.BYTE_ARRAY_EXTRA);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);

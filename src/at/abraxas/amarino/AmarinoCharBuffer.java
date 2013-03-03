@@ -1,19 +1,19 @@
 package at.abraxas.amarino;
 
-public class AmarinoByteBuffer {
+public class AmarinoCharBuffer {
 	
-	private byte[] buffer;
+	private char[] buffer;
 	private int pointer = 0;
 	public final String EOS_MARKER = ";";
 	
-	public AmarinoByteBuffer(int capacity){
-		buffer = new byte[capacity];
+	public AmarinoCharBuffer(int capacity){
+		buffer = new char[capacity];
 		this.clear();
 	}
 	
 	public static void main(String[] args) {
 
-		AmarinoByteBuffer bb = new AmarinoByteBuffer(16);
+		AmarinoCharBuffer bb = new AmarinoCharBuffer(16);
 
 		
 		bb.put((byte) 1);
@@ -31,7 +31,7 @@ public class AmarinoByteBuffer {
 	 * @param b
 	 */
 	public void put(byte b){
-		buffer[pointer] = b;
+		buffer[pointer] =  (char) b;
 		pointer++;
 	}
 	
@@ -40,7 +40,7 @@ public class AmarinoByteBuffer {
 	 */
 	public void clear(){
 		for(int i = 0; i < buffer.length; i++)
-			buffer[i] = -1;
+			buffer[i] = '0';
 		
 		pointer = 0;
 	}
@@ -117,7 +117,7 @@ public class AmarinoByteBuffer {
 	}
 	
 	public byte getByte(int pos){
-		return buffer[pos];
+		return (byte) buffer[pos];
 	}
 	
 	public byte[] getByteArray(int numValues){
@@ -125,7 +125,7 @@ public class AmarinoByteBuffer {
 			
 		for(int i = 0; i < numValues; i++){
 			if(buffer[i] != -1)
-				bytes[i] = buffer[i];
+				bytes[i] = (byte) buffer[i];
 		}
 		
 		return bytes;
@@ -137,7 +137,7 @@ public class AmarinoByteBuffer {
 	 * @return
 	 */
 	public char getChar(int pos){
-		return (char) buffer[pos];
+		return  buffer[pos];
 	}
 	
 	/**
@@ -150,7 +150,7 @@ public class AmarinoByteBuffer {
 		
 		for(int i = 0; i < numValues; i++){
 			if(buffer[i] != -1)
-				chars[i] = (char) buffer[i];
+				chars[i] =  buffer[i];
 		}
 		
 		return chars;
