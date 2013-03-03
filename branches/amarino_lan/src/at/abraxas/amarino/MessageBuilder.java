@@ -68,7 +68,6 @@ public class MessageBuilder {
 		DataOutputStream w = new DataOutputStream(baos);
 		
 		final int dataType = intent.getIntExtra(AmarinoIntent.EXTRA_DATA_TYPE, -1);
-		System.out.println("Datentyp: " + dataType);
 		if (dataType == -1) {
 			Logger.d(TAG, "EXTRA_DATA_TYPE not found");
 			return null;
