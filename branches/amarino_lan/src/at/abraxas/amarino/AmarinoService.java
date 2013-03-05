@@ -37,12 +37,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -60,6 +62,7 @@ import at.abraxas.amarino.log.Logger;
 /**
  * $Id: AmarinoService.java 444 2010-06-10 13:11:59Z abraxas $
  */
+@SuppressLint("NewApi")
 public class AmarinoService extends Service {
 	
 	private static final int NOTIFY_ID = 119561;
@@ -533,7 +536,7 @@ public class AmarinoService extends Service {
 	
 	private abstract class ConnectedThread extends Thread{
 	    private StringBuffer forwardBuffer = new StringBuffer();
-	    private AmarinoCharBuffer byteBuffer = new AmarinoCharBuffer(1024);
+	    private AmarinoByteBuffer byteBuffer = new AmarinoByteBuffer(1024);
 		public final String address;
 		public InputStream inStream;
 		public OutputStream outStream;
@@ -651,8 +654,19 @@ public class AmarinoService extends Service {
 					sendBroadcast(intent);
 				}
 				else {
-					byteBuffer.put(values[i]);
-					forwardBuffer.append(c);
+//					byteBuffer.put(values[i]);
+					
+					switch(dataType){
+					case MessageBuilder.BOOLEAN_FLAG : byteBuffer.put(values[i]); break;
+					case MessageBuilder.BYTE_FLAG : byteBuffer.put(values[i]); break;
+					case MessageBuilder.CHAR_FLAG : byteBuffer.put(values[i]); break;
+					case MessageBuilder.FLOAT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+3)); i+=3; break;
+					case MessageBuilder.INT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+3)); i+=3; break;
+					case MessageBuilder.SHORT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+1)); i+=1; break;
+					case MessageBuilder.STRING_FLAG : byteBuffer.put(values[i]); break;
+					}
+					
+//					forwardBuffer.append(c);
 				}
 			}
 		}
@@ -673,12 +687,12 @@ public class AmarinoService extends Service {
 //          sendBroadcast(intent);
 		}
 		
-		protected void forwardDataToOtherApps(AmarinoCharBuffer buffer, int dataType, int numValues){
+		protected void forwardDataToOtherApps(AmarinoByteBuffer buffer, int dataType, int numValues){
 			Intent intent = createReceivedIntent(buffer, dataType, numValues);
 			sendBroadcast(intent);
 		}
 		
-		protected Intent createReceivedIntent(AmarinoCharBuffer data, int dataType, int numValues){
+		protected Intent createReceivedIntent(AmarinoByteBuffer data, int dataType, int numValues){
 			Intent intent = new Intent(AmarinoIntent.ACTION_RECEIVED);
 			intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
 			
