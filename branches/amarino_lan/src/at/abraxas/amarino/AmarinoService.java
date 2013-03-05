@@ -637,7 +637,7 @@ public class AmarinoService extends Service {
 					byteBuffer.clear();
 				} else if(c == MessageBuilder.HB_ON_FLAG){
 					//get the time between heartbeats from the bytebuffer
-					int time = byteBuffer.getInt(0);
+					int time = byteBuffer.getLong(0);
 					
 					Intent intent = new Intent(AmarinoIntent.ACTION_HB_ON);
 					intent.putExtra(AmarinoIntent.EXTRA_DEVICE_ADDRESS, address);
@@ -660,9 +660,10 @@ public class AmarinoService extends Service {
 					case MessageBuilder.BOOLEAN_FLAG : byteBuffer.put(values[i]); break;
 					case MessageBuilder.BYTE_FLAG : byteBuffer.put(values[i]); break;
 					case MessageBuilder.CHAR_FLAG : byteBuffer.put(values[i]); break;
-					case MessageBuilder.FLOAT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+3)); i+=3; break;
-					case MessageBuilder.INT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+3)); i+=3; break;
-					case MessageBuilder.SHORT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+1)); i+=1; break;
+					case MessageBuilder.FLOAT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+4)); i+=3; break;
+					case MessageBuilder.LONG_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+4)); i+=3; break;
+					case MessageBuilder.INT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+2)); i+=1; break;
+					case MessageBuilder.SHORT_FLAG : byteBuffer.put(Arrays.copyOfRange(values, i, i+2)); i+=1; break;
 					case MessageBuilder.STRING_FLAG : byteBuffer.put(values[i]); break;
 					}
 					
@@ -762,6 +763,7 @@ public class AmarinoService extends Service {
 			 * int in Android is long in Arduino
 			 */
 			case MessageBuilder.INT_FLAG : 		
+				Logger.d(TAG, "Received an Integer:" + data.getInt(0));
 				if(numValues == 1){
 					int val = data.getInt(0);
 					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.INT_EXTRA);
@@ -782,7 +784,21 @@ public class AmarinoService extends Service {
 			 * long in Android does not fit in Arduino data types, better not to use it
 			 */
 			case MessageBuilder.LONG_FLAG : 
-				Logger.d(TAG, "long in Android does not fit in Arduino data types, better not to use it");
+				Logger.d(TAG, "Received an Long:" + data.getLong(0));
+				if(numValues == 1){
+					int val = data.getLong(0);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.LONG_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, val);
+				}else{
+					//long temp[] = data.asLongBuffer().array();
+					int vals[] = data.getLongArray(numValues);
+					/*
+					for(int i = 0; i < temp.length; i++)
+						vals[i] = (int) temp[i];
+					*/
+					intent.putExtra(AmarinoIntent.EXTRA_DATA_TYPE, AmarinoIntent.LONG_ARRAY_EXTRA);
+					intent.putExtra(AmarinoIntent.EXTRA_DATA, vals);
+				}
 				break;
 				
 			case MessageBuilder.SHORT_FLAG :

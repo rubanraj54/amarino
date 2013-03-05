@@ -69,23 +69,27 @@ public class AmarinoByteBuffer {
 	}
 	
 	/**
-	 * Int in Arduino is 4 bytes
+	 * Int in Arduino (Uno/AtMega) is 2 bytes
+	 * Int in Arduino Due is 4 bytes
+	 * 
 	 * @param pos
 	 * @return
 	 */
 	public int getInt(int pos) {
 		int value=0;
 
-	    for (int i = 0; i < 4; i++) {
-	        int shift = (4 - 1 - i) * 8;
-	        value += (buffer[i] & 0x000000FF) << shift;
+	    for (int i = 0; i < 2; i++) {
+	        int shift = (2 - 1 - i) * 8;
+	        value += (buffer[i] & 0xFF) << shift;
 	    }
 	    return value;
 
 	}
 	
 	/**
-	 * Int in Arduino is 4 bytes
+	 * Int in Arduino (Uno/AtMega) is 2 bytes
+	 * Int in Arduino Due is 4 bytes
+	 * 
 	 * @param pos
 	 * @return
 	 */
@@ -99,14 +103,38 @@ public class AmarinoByteBuffer {
 		return ints;
 	}
 	
-//	public long getLong(int pos){
-//		return -1;
-//		
-//	}
-//	
-//	public long[] getLongArray(int numValues){
-//		return new long[numValues];
-//	}
+	/**
+	 * Long in Arduino is 4 bytes
+	 * 
+	 * @param pos
+	 * @return
+	 */
+	public int getLong(int pos) {
+		int value=0;
+
+	    for (int i = 0; i < 4; i++) {
+	        int shift = (4 - 1 - i) * 8;
+	        value += (buffer[i] & 0xFF) << shift;
+	    }
+	    return value;
+
+	}
+	
+	/**
+	 * Long in Arduino is 4 bytes
+	 * 
+	 * @param pos
+	 * @return
+	 */
+	public int[] getLongArray(int numValues){
+		int[] ints = new int[numValues];
+		
+		for(int i = 0; i < numValues; i++){
+			ints[i] = getInt(i);
+		}		
+		
+		return ints;
+	}
 	
 	/**
 	 * Boolean in Arduino is 1 byte (0 or 1)
