@@ -38,6 +38,7 @@ public class AmarinoDbAdapter {
 	public static final String KEY_DEVICE_NAME = "name";
 	public static final String KEY_DEVICE_ADDRESS = "device_address";
 	public static final String KEY_DEVICE_TYPE = "device_type";
+	public static final String KEY_DEVICE_ARCHITECTURE = "device_architecture";
 	
 	public static final String KEY_EVENT_ID = "_id";
 	public static final String KEY_EVENT_NAME = "event_name";
@@ -80,7 +81,8 @@ public class AmarinoDbAdapter {
                     + KEY_DEVICE_ID + " INTEGER PRIMARY KEY,"
                     + KEY_DEVICE_ADDRESS + " TEXT UNIQUE,"
                     + KEY_DEVICE_NAME  + " TEXT,"
-                    + KEY_DEVICE_TYPE + " INTEGER"
+                    + KEY_DEVICE_TYPE + " INTEGER,"
+                    + KEY_DEVICE_ARCHITECTURE + " INTEGER"
                     + ");");
         	
         	db.execSQL("CREATE TABLE " + EVENT_TABLE_NAME + " ("
@@ -162,6 +164,12 @@ public class AmarinoDbAdapter {
         case Device.LANDEVICE : initialValues.put(KEY_DEVICE_TYPE, Device.LANDEVICE); break;
         default : initialValues.put(KEY_DEVICE_TYPE, -1); break;
         }
+        
+        switch(device.getArchitecture()){
+        case Device._16BIT : initialValues.put(KEY_DEVICE_ARCHITECTURE, Device._16BIT); break;
+        case Device._32BIT : initialValues.put(KEY_DEVICE_ARCHITECTURE, Device._32BIT); break;
+        default : initialValues.put(KEY_DEVICE_ARCHITECTURE, Device._16BIT); break;
+        }
                 	
         return mDb.insert(DEVICE_TABLE_NAME, null, initialValues);
     }
@@ -194,6 +202,12 @@ public class AmarinoDbAdapter {
     		default : break; //TODO: should not happen - throw exception
     		}
     		
+    		switch(c.getInt(c.getColumnIndex(KEY_DEVICE_ARCHITECTURE))){
+    		case Device._16BIT : device.setArchitecture(Device._16BIT);
+    		case Device._32BIT : device.setArchitecture(Device._32BIT);
+    		default : break;
+    		}
+    		
         }
         c.close();
     	return device;
@@ -215,15 +229,24 @@ public class AmarinoDbAdapter {
         }
         if (c.moveToFirst()){	
         	do {
+        		Device device = null;
         		String address = c.getString(c.getColumnIndex(KEY_DEVICE_ADDRESS));
         		String name = c.getString(c.getColumnIndex(KEY_DEVICE_NAME));
         		long id = c.getLong(c.getColumnIndex(KEY_DEVICE_ID));
+        		
         		switch(c.getInt(c.getColumnIndex(KEY_DEVICE_TYPE))){
-        		case Device.BTDEVICE : devices.add(new BTDevice(id, address, name)); break;
-        		case Device.LANDEVICE : devices.add(new LANDevice(id, address, name)); break;
+        		case Device.BTDEVICE : device = new BTDevice(id, address, name); break;
+        		case Device.LANDEVICE : device = new LANDevice(id, address, name); break;
         		default : break; //TODO: should not happen - throw exception
         		}
 
+        		switch(c.getInt(c.getColumnIndex(KEY_DEVICE_ARCHITECTURE))){
+        		case Device._16BIT : device.setArchitecture(Device._16BIT);
+        		case Device._32BIT : device.setArchitecture(Device._32BIT);
+        		default : break;
+        		}
+        		
+        		devices.add(device);
         	}
         	while(c.moveToNext());
         }

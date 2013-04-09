@@ -64,6 +64,8 @@ public class MessageBuilder {
 
 	public static byte[] getMessage(Intent intent) throws IOException{
 		
+		int arch = intent.getIntExtra(AmarinoIntent.EXTRA_DEVICE_ARCHITECTURE, -1);
+		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		DataOutputStream w = new DataOutputStream(baos);
 		

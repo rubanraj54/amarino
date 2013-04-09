@@ -374,6 +374,8 @@ public interface AmarinoIntent {
 	 */
 	public static final String EXTRA_DEVICE_TYPE = "amarino.intent.extra.DEVICE_TYPE";
 	
+	public static final String EXTRA_DEVICE_ARCHITECTURE = "amarino.intent.extra.DEVICE_ARCHITECTURE";
+	
 	/**
 	 * Type: String[] - an array containing the addresses of all connected
 	 * devices

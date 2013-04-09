@@ -10,6 +10,9 @@ private static final long serialVersionUID = -6041931825295548358L;
 	
 	public static final int BTDEVICE = 1;
 	public static final int LANDEVICE = 2;
+	
+	public static final int _16BIT = 1;
+	public static final int _32BIT = 2;
 
 	long id = -1;
 	String address;
@@ -17,6 +20,7 @@ private static final long serialVersionUID = -6041931825295548358L;
 	int state = AmarinoIntent.DISCONNECTED;
 	// <pluginID, event>
 	HashMap<Integer, Event> events;
+	int architecture = -1;
 	
 	public Device(String address){
 		this.address = address;
@@ -57,5 +61,14 @@ private static final long serialVersionUID = -6041931825295548358L;
 
 	@Override
 	public abstract String toString();
+
+	public int getArchitecture() {
+		return architecture;
+	}
+
+	public void setArchitecture(int architecture) {
+		this.architecture = architecture;
+	}
+	
 	
 }
