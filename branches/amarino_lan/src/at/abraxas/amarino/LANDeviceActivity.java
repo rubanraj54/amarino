@@ -21,6 +21,8 @@ public class LANDeviceActivity extends Activity {
 		
 		protected static String ADDRESS_EXTRA = "device_address";
 		protected static String TYPE_EXTRA = "device_lan";
+		//warum verwenden wir nicht die AmarinoIntent klasse für diese Extras? 
+		//bzw. die bereits vorhanden extras der klasse?
 
 
 		@Override
@@ -39,6 +41,9 @@ public class LANDeviceActivity extends Activity {
 						Intent i = new Intent();
 						i.putExtra(ADDRESS_EXTRA, address);
 						i.putExtra(TYPE_EXTRA, Device.LANDEVICE);
+
+						//in den intent die ein architecture extra einfügen
+						//wer fängt den intent??
 						setResult(RESULT_OK, i);
 						finish();
 					

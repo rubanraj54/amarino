@@ -586,22 +586,22 @@ public class AmarinoService extends Service {
 //			String values = data.split(" ")[1];
 			
 			
-			// datatype(short) = 2 byte, number of entries(int) = 4 Byte
-			byte[] flags = new byte[6];
-			for(int i = 0; i < 6; i++){
+			// datatype(byte) = 1 byte, number of entries(short) = 2 Byte
+			byte[] flags = new byte[3];
+			for(int i = 0; i < 3; i++){
 				flags[i] = data[i];
 			}
 			
 			//data.length-6 because of 6 flag bytes
-			byte[] values = new byte[data.length-6];
+			byte[] values = new byte[data.length-3];
 			for(int i = 0; i < values.length; i++){
 				values[i] = data[i+6];
 			}
 			 
 			//Data type flag should be third and fourth byte of message
-			int dataType = (0x0 << 24) | (0x0 << 16) | (flags[0] << 8) | flags[1];
+			int dataType = (0x0 << 24) | (0x0 << 16) | (0x0 << 8) | flags[0];
 			//the rest of the message should indicate the number of values
-			int numValues = (flags[2] << 24) | (flags[3] << 16) | (flags[4] << 8) | flags[5];
+			int numValues = (0x0 << 24) | (0x0 << 16) | (flags[1] << 8) | flags[2];
 			
 			boolean isArray = false;
 			if(numValues > 1) isArray = true;
