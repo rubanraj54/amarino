@@ -10,11 +10,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 public class LANDeviceActivity extends Activity {
 	
 		private Button connect;
+		private RadioButton radio16, radio32;
 		private TextView tv;
 		private Socket socket;
 		private String serverIpAddress = "";
@@ -30,11 +32,24 @@ public class LANDeviceActivity extends Activity {
 			
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.lan_device);
+			tv = (TextView) findViewById(R.id.iPTextView);
+			radio16 = (RadioButton) findViewById(R.id.radio16);
+			radio32 = (RadioButton) findViewById(R.id.radio32);
 			connect = (Button) findViewById(R.id.connect);
-			tv = (TextView) findViewById(R.id.myTextView);
 
 			connect.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
+					if(radio16.isChecked())
+					{
+						
+						//TODO set variable to 16bit
+						
+					}else if(radio32.isChecked())
+					{
+						
+						//TODO set variable to 32bit
+						
+					}
 					
 						serverIpAddress = ((EditText) findViewById(R.id.IPText01)).getText().toString().replace("/", "");
 						final String address = serverIpAddress;

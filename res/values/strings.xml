@@ -21,7 +21,7 @@
     <string name="monitoring">Monitoring</string>
     <string name="add_bt_device">Add BT Device</string><string name="add_lan_device">Add LAN Device</string>
     <string name="add_event">Add Event</string>
-    <string name="hello">Hello World, MainScreen!</string>
+    <string name="lanDevice">Please enter above the IP-Adress of your device and choose the architecture of your ardunio board. Check if an Integer is 16 or 32 bits long.</string>
     <string name="app_name">Amarino 2.0</string>
 	<string name="settings">Settings</string>
 	<string name="no_devices">First you have to add a new Bluetooth device.</string>
@@ -91,4 +91,6 @@
 	\n - shows a message when no plug-ins are installed and user tries to add an event
 	</string>
 	<string name="ip_adress">enter IP adress</string>
+	<string name="radio_16">till Arduino Due (int = 16bit)</string>
+	<string name="radio_32">from Arduino Due (int = 32bit)</string>
 </resources>

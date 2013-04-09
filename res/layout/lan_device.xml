@@ -4,21 +4,41 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/myTextView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.19"
-        android:text="@string/hello" />
-
     <EditText
-		android:inputType="numberDecimal|number"
-        android:digits="0123456789."
         android:id="@+id/IPText01"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ip_adress" >
-    </EditText>
+        android:digits="0123456789."
+        android:ems="10"
+        android:hint="@string/ip_adress"
+        android:inputType="numberDecimal|number" />
+    
+    <RadioGroup
+        android:id="@+id/radioArchitecture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+ 
+        <RadioButton
+            android:id="@+id/radio16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radio_16" 
+            android:checked="true" />
+ 
+        <RadioButton
+            android:id="@+id/radio32"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/radio_32" />
+ 
+    </RadioGroup>
+	
+    <TextView
+        android:id="@+id/iPTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_weight="0.19"
+        android:text="@string/lanDevice" />
 
     <Button
         android:id="@+id/connect"
