@@ -87,8 +87,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + s);
 			if (s.equalsIgnoreCase("")){
 				w.writeByte(flag);
-				w.writeShort(STRING_FLAG);
-				w.writeInt(0); 
+				w.writeByte(STRING_FLAG);
+				w.writeShort(0); 
 				w.write(ACK_FLAG); 
 				w.flush(); 
 				
@@ -97,8 +97,8 @@ public class MessageBuilder {
 
 			w.writeByte(flag);
 			//w.writeChar(flag);
-			w.writeShort(STRING_FLAG);
-			w.writeInt(1);
+			w.writeByte(STRING_FLAG);
+			w.writeShort(1);
 			w.writeUTF(s);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -111,8 +111,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + d);
 			
 			w.writeByte(flag);
-			w.writeShort(DOUBLE_FLAG);
-			w.writeInt(1);
+			w.writeByte(DOUBLE_FLAG);
+			w.writeShort(1);
 			w.writeFloat((float)d);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -125,8 +125,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + by);
 			
 			w.writeByte(flag);
-			w.writeShort(BYTE_FLAG);
-			w.writeInt(1);
+			w.writeByte(BYTE_FLAG);
+			w.writeShort(1);
 			w.writeByte(by);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -139,9 +139,16 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + i);
 			
 			w.writeByte(flag);
-			w.writeShort(INT_FLAG);
-			w.writeInt(1);
-			w.writeInt(i);
+			w.writeByte(INT_FLAG);
+			w.writeShort(1);
+			
+			switch(arch){
+			case Device._16BIT : 
+				Logger.d(TAG, "WARNING: Converting integer to short value due to architectural limitations, data loss may occur.");
+				w.writeShort(i); break;
+			case Device._32BIT : w.writeInt(i); break;
+			}
+
 			w.write(ACK_FLAG);
 			w.flush();
 			
@@ -153,8 +160,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + sh);
 			
 			w.writeByte(flag);
-			w.writeShort(SHORT_FLAG);
-			w.writeInt(1);
+			w.writeByte(SHORT_FLAG);
+			w.writeShort(1);
 			w.writeShort(sh);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -167,8 +174,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + f);
 			
 			w.writeByte(flag);
-			w.writeShort(FLOAT_FLAG);
-			w.writeInt(1);
+			w.writeByte(FLOAT_FLAG);
+			w.writeShort(1);
 			w.writeFloat(f);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -181,8 +188,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + b);
 			
 			w.writeByte(flag);
-			w.writeShort(BOOLEAN_FLAG);
-			w.writeInt(1);
+			w.writeByte(BOOLEAN_FLAG);
+			w.writeShort(1);
 			w.writeInt(((b) ? 1 : 0));
 			w.write(ACK_FLAG);
 			w.flush();
@@ -195,8 +202,8 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + c);
 			
 			w.writeByte(flag);
-			w.writeShort(CHAR_FLAG);
-			w.writeInt(1);
+			w.writeByte(CHAR_FLAG);
+			w.writeShort(1);
 			w.writeChar(c);
 			w.write(ACK_FLAG);
 			w.flush();
@@ -209,9 +216,18 @@ public class MessageBuilder {
 			//Logger.d(TAG, "plugin says: " + l);
 			
 			w.writeByte(flag);
-			w.writeShort(LONG_FLAG);
-			w.writeInt(1);
-			w.writeLong(l);
+			w.writeByte(LONG_FLAG);
+			w.writeShort(1);
+			
+			switch(arch){
+			case Device._16BIT : 
+				Logger.d(TAG, "WARNING: Converting long to short value due to architectural limitations, data loss may occur.");
+				w.writeShort((int) l); break;
+			case Device._32BIT : 
+				Logger.d(TAG, "WARNING: Converting long to integer value due to architectural limitations, data loss may occur.");
+				w.writeInt((int) l); break;
+			}
+
 			w.write(ACK_FLAG);
 			w.flush();
 		
@@ -221,13 +237,20 @@ public class MessageBuilder {
 			int[] ints = intent.getIntArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(INT_FLAG);
-			w.writeInt(ints.length);
+			w.writeByte(INT_FLAG);
+			w.writeShort(ints.length);
+			
+			switch(arch){
+			case Device._16BIT : Logger.d(TAG, "WARNING: Converting integer to short value due to architectural limitations, data loss may occur."); break;
+			}
 			
 			if (ints != null){
 //				String msg = new String();
 				for (int integer : ints){
-					w.writeInt(integer);
+					switch(arch){
+					case Device._16BIT : w.writeShort(integer); break;
+					case Device._32BIT : w.writeInt(integer); break;
+					}
 				}
 				w.write(ACK_FLAG);	
 				w.flush();
@@ -239,8 +262,8 @@ public class MessageBuilder {
 			char[] chars = intent.getCharArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(CHAR_FLAG);
-			w.writeInt(chars.length);
+			w.writeByte(CHAR_FLAG);
+			w.writeShort(chars.length);
 			
 			if (chars != null){
 				String msg = new String();
@@ -257,8 +280,8 @@ public class MessageBuilder {
 			byte[] bytes = intent.getByteArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(BYTE_FLAG);
-			w.writeInt(bytes.length);
+			w.writeByte(BYTE_FLAG);
+			w.writeShort(bytes.length);
 			
 			if (bytes != null){
 				for (byte oneByte : bytes){
@@ -274,8 +297,8 @@ public class MessageBuilder {
 			short[] shorts = intent.getShortArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(SHORT_FLAG);
-			w.writeInt(shorts.length);
+			w.writeByte(SHORT_FLAG);
+			w.writeShort(shorts.length);
 			
 			if (shorts != null){
 				for (short shorty : shorts){
@@ -291,8 +314,8 @@ public class MessageBuilder {
 			String[] strings = intent.getStringArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(STRING_FLAG);
-			w.writeInt(strings.length);
+			w.writeByte(STRING_FLAG);
+			w.writeShort(strings.length);
 			
 			if (strings != null){
 				for (String str : strings){
@@ -308,8 +331,8 @@ public class MessageBuilder {
 			double[] doubles = intent.getDoubleArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(DOUBLE_FLAG);
-			w.writeInt(doubles.length);
+			w.writeByte(DOUBLE_FLAG);
+			w.writeShort(doubles.length);
 			
 			if (doubles != null){
 				for (double singleDouble : doubles){ // :-)
@@ -325,8 +348,8 @@ public class MessageBuilder {
 			float[] floats = intent.getFloatArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(FLOAT_FLAG);
-			w.writeInt(floats.length);
+			w.writeByte(FLOAT_FLAG);
+			w.writeShort(floats.length);
 			
 			if (floats != null){
 				for (float fl : floats){
@@ -342,8 +365,8 @@ public class MessageBuilder {
 			boolean[] booleans = intent.getBooleanArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(BOOLEAN_FLAG);
-			w.writeInt(booleans.length);
+			w.writeByte(BOOLEAN_FLAG);
+			w.writeShort(booleans.length);
 			
 			if (booleans != null){
 				for (boolean bool : booleans){
@@ -359,12 +382,19 @@ public class MessageBuilder {
 			long[] longs = intent.getLongArrayExtra(AmarinoIntent.EXTRA_DATA);
 			
 			w.writeByte(flag);
-			w.writeShort(LONG_FLAG);
-			w.writeInt(longs.length);
+			w.writeByte(LONG_FLAG);
+			w.writeShort(longs.length);
+			
+			Logger.d(TAG, "WARNING: Converting long to short value due to architectural limitations, data loss may occur.");			
 			
 			if (longs != null){
 				for (long longo : longs){
-					w.writeLong(longo);
+					switch(arch){
+					case Device._16BIT : 
+						w.writeShort((int) longo); break;
+					case Device._32BIT : 
+						w.writeInt((int) longo); break;
+					}
 				}
 				w.write(ACK_FLAG);
 				w.flush();
