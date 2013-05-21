@@ -25,6 +25,11 @@ import at.abraxas.amarino.Amarino;
 
 public class SpeakToArduino extends Activity {
 	
+	/* TODO: change the address to the address of your Bluetooth module
+	 * and ensure your device is added to Amarino
+	 *
+	 * Note the address must be in CAPS!
+	 */
 	public static final String DEFAULT_DEVICE_ADDRESS = "00:06:66:03:73:7B";
 	
 	public static final String PREFS = "multicolorlamp";
