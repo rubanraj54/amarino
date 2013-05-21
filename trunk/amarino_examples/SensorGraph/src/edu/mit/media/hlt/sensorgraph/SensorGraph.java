@@ -41,8 +41,12 @@ public class SensorGraph extends Activity {
 	
 	private static final String TAG = "SensorGraph";
 	
-	// change this to your Bluetooth device address 
-	private static final String DEVICE_ADDRESS =  "00:06:66:03:73:7B"; //"00:06:66:03:73:7B";
+	/* TODO: change the address to the address of your Bluetooth module
+	 * and ensure your device is added to Amarino
+	 *
+	 * Note the address must be in CAPS!
+	 */
+	private static final String DEVICE_ADDRESS =  "00:06:66:03:73:7B"; 
 	
 	private GraphView mGraph; 
 	private TextView mValueTV;
